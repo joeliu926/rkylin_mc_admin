@@ -1,0 +1,107 @@
+<div class="doctor-edit-content">
+    <div class="fram-box admin-lbox">
+        <tree></tree>
+    </div><div class="fram-box admin-rbox">
+    <div class="out-box-border" style="padding: 12px;">
+        <div class="doctor-record">
+            <div class="record-text-ct">
+                <div>
+                    <span class="sel-title">用户创建/修改</span>
+                </div>
+            </div>
+            <div class="doctor-edit-ct">
+                <el-button @click="save">保存</el-button>
+                <el-button @click="saveAndAdd">保存并新建</el-button>
+                <el-button @click="Cancel">取消</el-button>
+            </div>
+        </div>
+        <div class="segment-title f-14">
+            <span class="s-title-l all-com-title">一般信息</span>
+            <span class="s-title-r">*必填信息</span>
+        </div>
+        <div class="doctor-info-ct">
+            <div class="row-ct" >
+                <div class="row-item" >
+                    <span class="row-item-title f-14" ><i class="i-must">*</i> 名称</span>
+                    <el-input v-model="userInfo.name" class="row-item-value"></el-input>
+                </div>
+            </div>
+            <div class="row-ct" >
+                <div class="row-item" >
+                    <span class="row-item-title f-14" ><i class="i-must"> </i> 别名</span>
+                    <el-input v-model="userInfo.nickname"  class="row-item-value"></el-input>
+                </div>
+            </div>
+        </div>
+
+        <div class="segment-title f-14">
+            <span class="s-title-l all-com-title">联系方式</span>
+            <span class="s-title-r">*必填信息</span>
+        </div>
+        <div class="doctor-info-ct">
+            <div class="row-ct" >
+                <div class="row-item" >
+                    <span class="row-item-title f-14" ><i class="i-must">*</i> 手机</span>
+                    <el-input  v-model="userInfo.mobile" @change="changeMobile()"  class="row-item-value" ></el-input>
+                </div>
+            </div>
+
+            <div class="row-ct">
+                <div class="row-item" >
+                    <span class="row-item-title f-14" ><i class="i-must"> </i> 微信</span>
+                    <el-input v-model="userInfo.wxAccount"  class="row-item-value"  ></el-input>
+                </div>
+            </div>
+
+            <div v-if="userId !='_EPT'" class="row-ct">
+                <div class="row-item" >
+                    <span class="row-item-title f-14" ><i class="i-must"> </i> 微信绑定码</span>
+                    <span >{{userInfo.userCode}}</span>
+                    <el-button @click="unbind">解绑</el-button>
+                    <div style="color:red;font-size: 12px; padding-left: 10px;padding-top: 10px;">Tips: 通知当前用户使用微信公众号[云像营销云]当中回复此码，即可进微信和系统帐号的绑定。</div>
+                </div>
+            </div>
+
+            <div class="row-ct">
+                <div class="row-item" >
+                    <span class="row-item-title f-14 v-a-top"><i class="i-must"> </i>头像</span>
+                    <input type="file" style="display: none;" ref="uploadImg" @change="fAjaxFileUpload">
+                    <div v-if="userInfo.headImgUrl" class="user-img" :style="{backgroundImage:['url('+userInfo.headImgUrl+')']}" @click="chooseImage"></div>
+                    <div v-if="!userInfo.headImgUrl" class="user-img"   @click="chooseImage">
+                        <img style="width: 100%;height: 100%;" src="../../../../common/img/add-img-icon.png">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="segment-title f-14"><span class="s-title-l all-com-title">工作信息</span> <span class="s-title-r">*必填信息</span></div>
+        <div class="doctor-info-ct">
+            <div class="row-ct" >
+                <div class="row-item" >
+                    <span class="row-item-title f-14 v-a-top" ><i class="i-must">*</i> 角色</span>
+                    <div style="display: inline-block;max-width: 350px;">
+                        <el-checkbox :key="role.id" v-for="(role,index) in roleList" @change="checkrole(role)" v-model="role.checked">{{role.name}}</el-checkbox>
+                    </div>
+                </div>
+            </div>
+            <div class="row-ct">
+                <div class="row-item" >
+                    <span class="row-item-title f-14" ><i class="i-must">*</i> 用户名</span>
+                    <el-input  :disabled="userId !='_EPT'" v-model="userInfo.loginName" class="row-item-value"  ></el-input>
+                </div>
+            </div>
+
+            <div v-if="userId !='_EPT'" class="row-ct">
+                <div class="row-item" >
+                    <span class="row-item-title f-14" ><i class="i-must"> </i> 重置密码</span>
+                    <el-button @click="resetPassword">重置</el-button>
+                    <div style="color:red;font-size: 12px; padding-left: 10px;padding-top: 10px;">Tips: 密码将会自动生成为手机号后六位。</div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    </div>
+</div>

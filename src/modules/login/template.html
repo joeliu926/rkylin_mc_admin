@@ -1,0 +1,39 @@
+<div class="login login-flex" >
+    <div  class="login-left-content login-flex">
+        <div class="login-elrow">
+            <div class="login-icon">
+                <img src="../../common/img/login_logo.png" width="88" height="88">
+            </div>
+            <div class="grid-content">
+                <el-input v-model="sName" size="large" class="login-name login-input" @input="clearwaring()" placeholder="请输入手机号码或邮箱"></el-input>
+                <el-alert v-if="alertPhone"    :closable="false"
+                        title="手机号有误"
+                        type="warning">
+                </el-alert>
+                <el-input v-model="sPassword" autocomplete="off" size="large" type="password" @input="clearwaring"  @keyup.enter.native="fLogin" class="login-pwd login-input" placeholder="请输入密码"></el-input>
+                <el-alert v-if="alertPassword"  :closable="false"
+                        title="密码有误"
+                        type="warning">
+                </el-alert>
+
+                <el-alert v-if="alertWaring"    :closable="false"
+                        title="用户名或密码有误"
+                        type="error">
+                </el-alert>
+            </div>
+            <div class="grid-content">
+                <el-button  size="large" class="login-submit" @click="fLogin">登录</el-button>
+            </div>
+            <div>
+                <label><a class="login-ltext" href="javascript:;">忘记密码?</a></label>
+            </div>
+        </div>
+        <div class="item-space"></div>
+    </div>
+    <div class="login-right-img">
+        <!--<img src="../../common/img/login-right.jpg" class="login-img"  width="576">-->
+    </div>
+</div>
+
+
+

@@ -1,0 +1,31 @@
+<div class="nav-admin-content nav-content-gradient">
+    <el-row >
+        <el-col :span="18" style="height:60px;overflow: hidden;" >
+
+            <el-col :span="1"><i @click="gohome()" class="nav-select-list el-icon-pa-home nav-home-icon"></i></el-col>
+            <el-col :span="10" style="text-align:left;"><span class="nav-logo"></span><span class="nav-text">哈罗美云</span></el-col>
+        </el-col>
+
+        <el-col :span="6">
+            <div  @mouseout="setdropdown('lazyout1')" @click="changeshow"  class="user-img nav-select-list">
+                <img :src="userImage||defaultPic"  class="nav-user-img">
+            </div>
+            <div @mouseover="setdropdown('over')"  @mouseout="setdropdown('out')" class="alert-content out-box-border" v-show="show" >
+                <el-row class="alert-top">
+                    <el-col :span="5"><img :src="userImage||defaultPic"  class="alert-user-img"></el-col>
+                    <el-col :span="19">
+                        <span class="customer-user-name"style="float:left;margin-top: 4px;padding:10px 5px 10px 20px;">
+                            <p style="font-size: 14px;text-align: left">{{name}}</p>
+                            <p class="clinic-name"> {{clinicName}}</p>
+                        </span>
+                    </el-col>
+                </el-row>
+                <div class="item-title">用户名</div>
+                <div class="item-data">{{userName}}</div>
+                <div class="item-title">操作</div>
+               <div class="item-data" v-if="backgroundRight"  @click="fLoginOut('backfront')">返回前台</div>
+                <div class="item-data"  @click="fLoginOut('loginout')">退出</div>
+            </div>
+        </el-col>
+    </el-row>
+</div>
