@@ -11,31 +11,60 @@ export default {
             checkedKeys:[1,2],
             treeData:
             [
+            // {
+            //     id:'admin_user',
+            //     label: '用户',
+            //     linkUrl:'',
+            //     hightline:false,
+            //     needinit:false,
+            //     count:0,
+            //     children: [{
+            //         id:'admin_user_user',
+            //         label: '用户',
+            //         linkUrl:'/admin/userlist',
+            //         hightline:false,
+            //         needinit:false,
+            //         count:0,
+
+            //     },{
+            //         id:'admin_user_role',
+            //         label: '角色',
+            //         linkUrl:'/admin/rolelist',
+            //         hightline:false,
+            //         needinit:false,
+            //         count:0,
+
+            //     }]
+            // },
             {
-                id:'admin_user',
-                label: '用户',
+                id:'admin_sign',
+                label: '签约',
                 linkUrl:'',
                 hightline:false,
                 needinit:false,
                 count:0,
                 children: [{
-                    id:'admin_user_user',
-                    label: '用户',
-                    linkUrl:'/admin/userlist',
+                    id:'admin_sign_account',
+                    label: '申请账号',
+                    linkUrl:'/admin/applyaccount',
                     hightline:false,
                     needinit:false,
                     count:0,
 
                 },{
-                    id:'admin_user_role',
-                    label: '角色',
-                    linkUrl:'/admin/rolelist',
+                    id:'admin_sign_audit',
+                    label: '审核申请',
+                    linkUrl:'/admin/accountaudit',
                     hightline:false,
                     needinit:false,
                     count:0,
 
                 }]
-            }],
+            }
+        
+        
+        
+            ],
          
             distreeData:[]
         };

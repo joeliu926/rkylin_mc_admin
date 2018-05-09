@@ -11,8 +11,11 @@ var login = r => require.ensure([], () => r(require('../modules/login/index.vue'
 var admin_nav = r => require.ensure([], () => r(require('../modules/admin/nav/index.vue')), 'case_base');
 var admin_tree = r => require.ensure([], () => r(require('../modules/admin/tree/index.vue')), 'case_base');
 
-var admin_userlist = r => require.ensure([], () => r(require('../modules/admin/userlist/index.vue')), 'admin_userlist');
-var admin_userlist_edit = r => require.ensure([], () => r(require('../modules/admin/userlist/edituser/index.vue')), 'admin_userlist_edit');
+
+var admin_sign_account = r => require.ensure([], () => r(require('../modules/admin/applyaccount/index.vue')), 'admin_sign_account');
+var admin_sign_audit = r => require.ensure([], () => r(require('../modules/admin/accountaudit/index.vue')), 'admin_sign_audit');
+
+
 
 var routerConfig = {
     linkActiveClass: 'active',
@@ -21,35 +24,25 @@ var routerConfig = {
             name:'/',
             path: '/',
             components:{
-                default:admin_userlist,
+                default:admin_sign_account,
                 nav:admin_nav
             }
-        },
-        {
+        },{
             name:'/login',
             path: '/login',
             component:login
-        },
-        {
-            name:'/test',
-            path: '/test',
+        },{
+            name:'/admin/applyaccount',
+            path: '/admin/applyaccount',
             components:{
-                default:test,
-                nav:nav
-            }
-        },
-        {
-            name:'/admin/userlist',
-            path: '/admin/userlist',
-            components:{
-                default:admin_userlist,
+                default:admin_sign_account,
                 nav:admin_nav
             }
-        }, {
-            name:'/admin/userlist/edit',
-            path: '/admin/userlist/edit/:id',
+        },{
+            name:'/admin/accountaudit',
+            path: '/admin/accountaudit',
             components:{
-                default:admin_userlist_edit,
+                default:admin_sign_audit,
                 nav:admin_nav
             }
         }
