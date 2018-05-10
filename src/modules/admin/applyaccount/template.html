@@ -18,37 +18,39 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >诊所名称</span><b class="line-row-red"></b>
-                        <el-input class="row-item-value" value="" placeholder=""></el-input>
+                        <el-input class="row-item-value" v-model="oClinic.name" placeholder=""></el-input>
                     </div> 
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >诊所管理员用户名</span><b class="line-row-red"></b>
-                        <el-input class="row-item-value" value="" placeholder=""></el-input>
+                        <el-input class="row-item-value" value="" @keyup.native="fCheckUser" v-model="checkUserhVal" ></el-input>
+                        <span v-if="usable" style="color:#67c23a;">此用户名可用</span>
+                        <span v-if="occupyUser" style="color:#cc0000;">此用户名已被占用</span>
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >隶属集团（可选）</span><b class="line-row-tra"></b>
-                        <el-input class="row-item-value" value="" placeholder=""></el-input>
+                        <el-input class="row-item-value" v-model="oClinic.group" placeholder=""></el-input>
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >联系人姓名</span><b class="line-row-red"></b>
-                        <el-input class="row-item-value" value=""  placeholder=""></el-input>
+                        <el-input class="row-item-value" v-model="oClinic.linkname" placeholder=""></el-input>
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >联系人手机号码</span><b class="line-row-red"></b>
-                        <el-input class="row-item-value" value=""  placeholder=""></el-input>
+                        <el-input class="row-item-value" v-model="oClinic.phone"  placeholder=""></el-input>
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >联系人邮箱</span><b class="line-row-tra"></b>
-                        <el-input class="row-item-value" value="" placeholder=""></el-input>
+                        <el-input class="row-item-value" v-model="oClinic.email" placeholder=""></el-input>
                     </div>
                 </div>
                 <div class="row-ct">
@@ -92,12 +94,12 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >诊所等级</span><b class="line-row-red"></b>
-                        <el-select v-model="gradeVal" placeholder="请选择">
+                        <el-select v-model="oClinic.qualification" placeholder="请选择">
                                 <el-option
-                                  v-for="item in grade"
-                                  :key="item.value"
-                                  :label="item.label"
-                                  :value="item.value">
+                                  v-for="item in oClinicRank"
+                                  :key="item"
+                                  :label="item"
+                                  :value="item">
                                 </el-option>
                               </el-select>
                     </div>
@@ -105,16 +107,39 @@
                 <div class="row-ct">
                         <div class="row-item" >
                             <span class="row-item-title f-14" >主营项目</span><b class="line-row-red"></b>
-                            <el-select v-model="projectsVal" placeholder="请选择">
-                                    <el-option
-                                      v-for="item in projects"
-                                      :key="item.value"
-                                      :label="item.label"
-                                      :value="item.value">
-                                    </el-option>
-                                  </el-select>
+                            <el-select
+                                v-model="productItem"
+                                filterable
+                                remote
+                                reserve-keyword
+                                placeholder="请输入关键词"
+                                @change="fSelectProductItem"
+                                :remote-method="fAutoProduct"
+                            >
+                                <el-option
+                                        v-for="item in searchData"
+                                        :key="item.id"
+                                        selected
+                                        :label="item.productName"
+                                        :value="item">
+                                </el-option>
+                            </el-select>
+                        </div>
+                        <div class="row-item" style="padding: 10px 0 0 95px;">
+                                <div class="major-project">
+                                    <!-- <template v-for="item in caseDetail.products"> -->
+                                            <template>
+                                        <span class="goodat f-14">
+                                            <!-- {{item.productName}} -->豆腐干豆腐
+                                            <i class="el-icon-pa-close i-close-p" @click="fRemoveProduct(item)"></i>
+                                        </span>
+                                        
+                                    </template>
+                                </div>
                         </div>
                 </div>
+                
+
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14 v-a-top" >LOGO</span><b class="line-row-red" style="vertical-align: top;display: inline-block;height: 20px;"></b>
@@ -129,12 +154,12 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14 v-a-top" >营业时间</span><b class="line-row-red" style="vertical-align: top;"></b>
-                        <el-input class="row-item-value" value="" placeholder="" type="textarea" style="margin-top: -6px;"></el-input>
+                        <el-input class="row-item-value" v-model="oClinic.businessTime" placeholder="" type="textarea" style="margin-top: -6px;"></el-input>
                     </div> 
                 </div>
                 <div class="row-ct">
                     <div class="row-item">
-                        <span class="row-item-title f-14">详细地址</span>
+                        <span class="row-item-title f-14">详细地址</span><b class="line-row-red"></b>
                         <input type="text" class="row-item-value el-input__inner" placeholder="请输入地址" style="width: 280px;" id="suggestId" value="" v-model="address" />
                         <div id="searchResultPanel" ref="dropaddress" style="border:1px solid #C0C0C0;width:250px;height:auto;display: none;"></div>
                     </div>
@@ -157,37 +182,37 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >诊所名称</span>
-                        <span class="row-item-value"></span>
+                        <span class="row-item-value">{{oClinic.name}}</span>
                     </div> 
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >诊所管理员用户名</span>
-                        <span class="row-item-value"></span>
+                        <span class="row-item-value">{{checkUserhVal}}</span>
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >隶属集团（可选）</span>
-                        <span class="row-item-value"></span>
+                        <span class="row-item-value">{{oClinic.group}}</span>
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >联系人姓名</span>
-                        <span class="row-item-value"></span>
+                        <span class="row-item-value">{{oClinic.linkname}}</span>
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >联系人手机号码</span>
-                        <span class="row-item-value"></span>    
+                        <span class="row-item-value">{{oClinic.phone}}</span>    
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >联系人邮箱</span>
-                        <span class="row-item-value"></span>
+                        <span class="row-item-value">{{oClinic.phone}}</span>
                     </div>
                 </div>
                 <div class="row-ct">
@@ -205,13 +230,13 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >诊所等级</span>
-                        <span class="row-item-value"></span>
+                        <span class="row-item-value">{{oClinic.qualification}}</span>
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >主营项目</span>
-                        <span class="row-item-value"></span>
+                        <span class="row-item-value">{{oClinic.qualification}}</span>
                     </div>
                 </div>
                 <div class="row-ct">
@@ -225,14 +250,15 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14 v-a-top" >营业时间</span>
-                        <span class="row-item-value"></span>
+                        <span class="row-item-value">{{oClinic.businessTime}}</span>
                     </div> 
                 </div>
                 <div class="row-ct">
                     <div class="row-item">
                         <span class="row-item-title f-14">详细地址</span>
-                        <input type="text" class="row-item-value el-input__inner"  style="width: 280px;"  value=""  disabled/>
-                        
+                        <span class="row-item-value" id="suggestId0">{{address}}</span>
+                        <!-- <input type="text" class="row-item-value el-input__inner" placeholder="请输入地址" style="width: 280px;" id="suggestId" value="" v-model="address" />
+                        <div id="searchResultPanel0" ref="dropaddress0" style="border:1px solid #C0C0C0;width:250px;height:auto;display: none;"></div> -->
                     </div>
                 </div>
 

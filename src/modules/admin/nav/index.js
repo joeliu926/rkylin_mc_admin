@@ -20,19 +20,27 @@ export default {
     },
     created() {
         let _this = this;
-        _.ajax({
-            url: '/user/getuserinfo',
-            method: 'POST',
-            success: function (res) {
-                _this.name = res.name;
-                _this.clinicName = res.clinicName?res.clinicName:'欢迎使用哈罗美云！';
-                _this.userName=res.loginName;
-                let _menus = res.menus?res.menus:[];
-                _this.userImage = res.headImgUrl;
+        // _.ajax({
+        //     url: '/user/getuserinfo',
+        //     method: 'POST',
+        //     success: function (res) {
+        //         _this.name = res.name;
+        //         _this.clinicName = res.clinicName?res.clinicName:'欢迎使用哈罗美云！';
+        //         _this.userName=res.loginName;
+        //         let _menus = res.menus?res.menus:[];
+        //         _this.userImage = res.headImgUrl;
 
-            }
-        },'withCredentials');
-        this.auth();
+        //     }
+        // },'withCredentials');
+        console.log('store.state.userInfo', store.state.userInfo);
+        let res = store.state.userInfo
+        _this.name = res.name;
+        _this.clinicName = res.clinicName?res.clinicName:'欢迎使用哈罗美云！';
+        _this.userName=res.loginName;
+        let _menus = res.menus?res.menus:[];
+        _this.userImage = res.headImgUrl;
+
+        this.auth(res);
 
 
     },
@@ -43,28 +51,42 @@ export default {
 
     },
     methods: {
-        auth(){
+        auth (res) {
             let _this = this;
-            _.ajax({
-                url: '/user/getuserinfo',
-                method: 'POST',
-                success: function (res) {
-                    let _menus = res.menus ? res.menus : [];
-                   // let backgroundRight = false;
-                    _menus.forEach(m => {
-                        let menusid = m.split(':')[2];
-                        switch (menusid) {
-                            case "systembackground":
-                                _this.backgroundRight=true;
-                               // backgroundRight = true;
-                                break;
-                        }
-                    });
-                    if (!_this.backgroundRight) {
-                        _this.$router.push('/');
-                    }
+            // _.ajax({
+            //     url: '/user/getuserinfo',
+            //     method: 'POST',
+            //     success: function (res) {
+            //         let _menus = res.menus ? res.menus : [];
+            //        // let backgroundRight = false;
+            //         _menus.forEach(m => {
+            //             let menusid = m.split(':')[2];
+            //             switch (menusid) {
+            //                 case "systembackground":
+            //                     _this.backgroundRight=true;
+            //                    // backgroundRight = true;
+            //                     break;
+            //             }
+            //         });
+            //         if (!_this.backgroundRight) {
+            //             _this.$router.push('/');
+            //         }
+            //     }
+            // }, 'withCredentials');
+            let _menus = res.menus ? res.menus : [];
+                  
+            _menus.forEach(m => {
+                let menusid = m.split(':')[2];
+                switch (menusid) {
+                    case "systembackground":
+                        _this.backgroundRight=true;
+                        break;
                 }
-            }, 'withCredentials');
+            });
+            if (!_this.backgroundRight) {
+                _this.$router.push('/');
+            }
+
         },
         setdropdown(params){
             let _this =this;

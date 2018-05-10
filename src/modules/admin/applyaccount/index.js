@@ -1,5 +1,7 @@
 import tree from '../tree/index.vue';
 import store from '../../../vuex';
+import CONSTANT from '../../../common/utils/constants.js';
+import VAREGEX from '../../../common/utils/valregex.js';
 export default {
     components: {
         tree},
@@ -7,43 +9,47 @@ export default {
         return {
             addImg:require("../../../common/img/add-img-icon.png"),
             defaultImg:require("../../../common/img/add-img-icon.png"),
-            editShow:true,
-            viewShow:false,
+            //imgUploadUrl: "/api/caseHeader/uploadCasePicture",
+            imgUploadUrl: CONSTANT.fileUpload+"api/caseHeader/uploadCasePicture",
+            editShow: true,
+            viewShow: false,
+            checkUserhVal: "",
+            usable: false,
+            occupyUser: false,
+            oClinic:{
+                "name": "", // 诊所名称
+                "admin": "", // 诊所管理员用户名
+                "group": "",
+                "linkname": "", // 联系人姓名
+                "phone": "",
+                "email": "",
+                "qualification": "", //诊所等级
+                "businessTime": "",
+
+            },
+            oClinicRank: ["诊所", "门诊部", "整形外科医院", "一级民营医院", "二级医院", "三级甲等医院"],
+            productItem:"",//单项诊疗项目 
+            searchData:[],
+            //caseId:'',
+            oProductCode: [], //诊疗项目id集合1111
+            oSelectProductItems: [], //选中的诊疗项目1111
             fileList:[],
-            grade:[
-                {
-                    value: '选项2',
-                    label: '双皮奶'
-                },
-            ],
-            gradeVal:"",
-            projects:[
-                {
-                    value: '选项3',
-                    label: '双皮奶'
-                },
-            ],
-            projectsVal:"",
+            
             address:"",
+            mapPoint:{},
             oCreatData:{},
             name:""
         };
     },
     created() {
-       // this.getRolelist(1);
+      
     },
     mounted(){
         let _This=this;
         _This.contentMap = new BMap.Map("map-content");
-        //_This.viewMap = new BMap.Map("map-content-view");
         let map = _This.contentMap;
-        //let mapView = _This.viewMap;
         map.centerAndZoom("北京", 12);
-        map.enableScrollWheelZoom(true);
-        //mapView.centerAndZoom("北京", 12);
-        //mapView.enableScrollWheelZoom(true);
-
-
+        //map.enableScrollWheelZoom(true);
         let autoDrop = new BMap.Autocomplete( //建立一个自动完成的对象
             {
                 "input": "suggestId",
@@ -57,14 +63,150 @@ export default {
             _This.fSearchAddressByAddress(18);
         });
 
-        
-        _This.viewMap = new BMap.Map("map-content-view");
-        let mapView = _This.viewMap;
-        mapView.centerAndZoom("北京", 12);
-        mapView.enableScrollWheelZoom(true);
        
     },
-    methods: {
+    methods: {      
+        fsubmit () {
+
+            /*验证判断必填项*/
+            // if(!/\S{1,}/.test(this.oClinic.name)){
+            //     this.$message.error("诊所名称不能为空");
+            //     return false;
+            // }
+            // if(!/\S{1,}/.test(this.checkUserhVal)){
+            //     this.$message.error("诊所管理员用户名不能为空");
+            //     return false;
+            // }
+            // if(!/\S{1,}/.test(this.oClinic.linkname)){
+            //     this.$message.error("诊所管理员用户名不能为空");
+            //     return false;
+            // }
+            // let phone= this.oClinic.phone;
+            // if((!VAREGEX.isMobile(phone))&&!VAREGEX.isTel(phone)){ //VAREGEX
+            //     this.$message.error("请输入正确的电话号码");
+            //     return false;
+            // }
+            // if((!VAREGEX.isEmail(this.oClinic.email)) && (this.oClinic.email != "") ){ //VAREGEX
+            //     this.$message.error("请输入正确的邮箱");
+            //     return false;
+            // }
+            // if(!/\S{2,}/.test(this.oClinic.businessTime)){
+            //     this.$message.error("请输入营业时间");
+            //     return false;
+            // }
+            if(!/\S{2,}/.test(this.address)){
+                this.$message.error("请输入详细地址");
+                return false;
+            }
+
+            let _This = this;
+            _This.editShow = false;
+            _This.viewShow = true;
+            _This.address0 = _This.address;
+
+            var map = new BMap.Map("map-content-view");    // 创建Map实例
+            // console.log(_This.mapPoint);
+            // map.centerAndZoom(new BMap.Point(_This.mapPoint.lng, _This.mapPoint.lat), 17);  // 初始化地图,设置中心点坐标和地图级别
+          
+            _This.fGetSpecificAddress(_This.mapPoint.point);
+           
+            
+        },
+        fback () {
+            let _This = this;
+            _This.editShow = true;
+            _This.viewShow = false;
+            
+        },
+        fconfirm () {
+            
+            
+        },
+
+        fCheckUser () {
+            let _This = this;
+            if (_This.checkUserhVal != "") {
+                let fdata = {
+                    "checkType": 1,
+                    "checkContent": _This.checkUserhVal
+                }
+                _.ajax({
+                    url: '/oms/api/user/check',
+                    type: 'POST',
+                    data: fdata,
+                    success: function(result) {
+                        console.log(result);
+                        if(result.code == 3010){
+                            _This.usable = true;
+                            _This.occupyUser = false;
+                        } else if (result.code == 3011) {
+                            _This.usable = false;
+                            _This.occupyUser = true;
+                        }
+                    },
+                    error: function(result) {
+                        //console.log("error-- result------>", result)
+                    }
+                })
+            } else {
+                _This.usable = false;
+                _This.occupyUser = false;
+            }
+            
+        },
+        //获取诊疗项目列表
+        fAutoProduct(query) {
+            if (query !== '') {
+                this.loading = false;
+                var _This = this;
+                console.log('store.state.userInfo', store.state.userInfo.loginName);
+                _.ajax({
+                    url: '/api/product/searchList?loginName='+ store.state.userInfo.loginName +'&productName=' + query,
+                    method: 'GET',
+                    success: function (result) {
+                        if(result.code==0){
+                            _This.searchData=result.data;
+                        }
+                    }
+                });
+            } else {
+                this.searchData = [];
+            }
+        },
+        /**
+         * 选中诊疗项目
+         * @param item
+         */
+        fSelectProductItem(item){
+            let _This=this;
+             if(_This.oProductCode.indexOf(item.id))
+             {
+                 _This.oProductCode.push(item.id);
+                 delete item.page;
+                 if(item.productName){
+                     _This.caseDetail.products.push(item);
+                 }
+             }
+            this.productItem ="";
+        },
+         /**
+         * 删除诊疗项目
+         * @param item
+         */
+        fRemoveProduct(item){
+
+            // console.log("============","+++++++++++++",this.oProductCode);
+            let _This=this;
+            let index= _This.caseDetail.products.indexOf(item);
+            if(index>=0){
+                _This.oProductCode.splice(index,1);
+                _This.caseDetail.products.splice(index,1);
+            }
+            // console.log(this.caseDetail.products);
+        },
+
+
+
         handleRemove(file, fileList) {
             console.log(file, fileList);
         },
@@ -99,43 +241,22 @@ export default {
             var fdata = new FormData();
             fdata.append('imgFile', imgFile);
             fdata.append('user',"test");
-            // _.ajax({
-            //     url: _This.imgUploadUrl,
-            //     type: 'POST',
-            //     data: fdata,
-            //     urlType: 'full',
-            //     contentType: false,
-            //     processData: false,
-            //     success: function(result) {
-            //         if(result.code==0&&result.data.length>0){
-            //             _This.userInfo.headImgUrl=result.data[0];
-            //         }
-            //     },
-            //     error: function(result) {
-            //         //console.log("error-- result------>", result)
-            //     }
-            // });
-        },
-
-        fsubmit () {
-            console.log("提交....")
-            let _This = this;
-            _This.editShow = false;
-            _This.viewShow = true;
             
+            _.ajax({
+                url: _This.imgUploadUrl,
+                type: 'POST',
+                data: fdata,
+                success: function(result) {
+                    console.log(result)
+                    if(result.code==0&&result.data.length>0){
+                        _This.userInfo.headImgUrl=result.data[0];
+                    }
+                },
+                error: function(result) {
+                    //console.log("error-- result------>", result)
+                }
+            });
         },
-        fback () {
-            let _This = this;
-            _This.editShow = true;
-            _This.viewShow = false;
-            
-        },
-        fconfirm () {
-
-        },
-
-
-
 
 
         /**
@@ -154,6 +275,8 @@ export default {
                         return false;
                     }
                     var poi = searchResult.getPoi(0);
+                    _This.mapPoint = poi;
+                    console.log("bbbbbbbbbbb", _This.mapPoint)
                     _This.fGetSpecificAddress(poi.point);
                     map.centerAndZoom(poi.point, msize);
                     map.clearOverlays();

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node build/dev.js http://140.143.185.73:8085 ws://localhost:8055/ https://nihaomc.com/uploadimg_dev/",
+    "dev": "node build/dev.js https://sit-api.nihaomc.com ws://localhost:8055/ https://nihaomc.com/uploadimg_dev/",
     "sdev": "node build/dist.js https://sit-api.nihaomc.com wss://nihaomc.com/websocket_dev/ https://nihaomc.com/uploadimg_dev/",
     "test": "node build/dist.js https://uat-api.nihaomc.com wss://nihaomc.com/websocket_test/ https://nihaomc.com/uploadimg_test/",
     "dist": "node build/dist.js https://api.nihaomc.com wss://nihaomc.com/websocket/ https://nihaomc.com/uploadimg/",
