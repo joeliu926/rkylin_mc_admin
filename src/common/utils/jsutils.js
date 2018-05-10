@@ -26,12 +26,12 @@ module.exports = {
             };
         }
         //opts["Content-Type"]= "application/json";
-        //opts.contentType= "application/json; charset=utf-8";
-        opts.headers= {
-           // "Access-Control-Request-Headers":'*',
-            //"Content-Type":"application/json;charset=utf-8",
-           // "authorization":auth
-        };
+        opts.contentType= "application/json; charset=utf-8";
+        // opts.headers= {
+        //     //"Access-Control-Request-Headers":'*',
+        //     //"Content-Type":"application/json",
+        //     "authorization":auth
+        // };
 
         //opts.crossDomain= true;
 
