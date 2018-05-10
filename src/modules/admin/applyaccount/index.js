@@ -7,6 +7,8 @@ export default {
         return {
             addImg:require("../../../common/img/add-img-icon.png"),
             defaultImg:require("../../../common/img/add-img-icon.png"),
+            editShow:true,
+            viewShow:false,
             fileList:[],
             grade:[
                 {
@@ -23,7 +25,8 @@ export default {
             ],
             projectsVal:"",
             address:"",
-            oCreatData:{}
+            oCreatData:{},
+            name:""
         };
     },
     created() {
@@ -31,10 +34,16 @@ export default {
     },
     mounted(){
         let _This=this;
-        _This.contentMap=new BMap.Map("map-content");
-        let map =_This.contentMap;
+        _This.contentMap = new BMap.Map("map-content");
+        //_This.viewMap = new BMap.Map("map-content-view");
+        let map = _This.contentMap;
+        //let mapView = _This.viewMap;
         map.centerAndZoom("北京", 12);
         map.enableScrollWheelZoom(true);
+        //mapView.centerAndZoom("北京", 12);
+        //mapView.enableScrollWheelZoom(true);
+
+
         let autoDrop = new BMap.Autocomplete( //建立一个自动完成的对象
             {
                 "input": "suggestId",
@@ -47,24 +56,85 @@ export default {
             _This.address=selectValue;
             _This.fSearchAddressByAddress(18);
         });
+
+        
+        _This.viewMap = new BMap.Map("map-content-view");
+        let mapView = _This.viewMap;
+        mapView.centerAndZoom("北京", 12);
+        mapView.enableScrollWheelZoom(true);
+       
     },
     methods: {
         handleRemove(file, fileList) {
             console.log(file, fileList);
-          },
-          handlePreview(file) {
+        },
+        handlePreview(file) {
+           
             console.log(file);
-          },
-          handleExceed(files, fileList) {
+        },
+        handleExceed(files, fileList) {
             this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-          },
-          beforeRemove(file, fileList) {
+        },
+        beforeRemove(file, fileList) {
             return this.$confirm(`确定移除 ${ file.name }？`);
-          },
+        },
+
+        chooseImage(){
+            this.$refs.uploadImg.click();
+        },
+        fAjaxFileUpload(e){
+            let _This = this;
+            var imgFile = e.target.files[0];
+            if(imgFile.size>5*1024*1024){
+                this.$message.error('图片大小不能超过5M！');
+                return false;
+            }
+            let aLogoType=[".jpg",".jpeg",".png",".bmp"];
+            let imgName = imgFile.name.substr(imgFile.name.lastIndexOf(".")).toLocaleLowerCase();
+            if(aLogoType.indexOf(imgName)<0){
+                _This.$message.error("上传图片格式错误");
+                return false;
+            }
+
+            var fdata = new FormData();
+            fdata.append('imgFile', imgFile);
+            fdata.append('user',"test");
+            // _.ajax({
+            //     url: _This.imgUploadUrl,
+            //     type: 'POST',
+            //     data: fdata,
+            //     urlType: 'full',
+            //     contentType: false,
+            //     processData: false,
+            //     success: function(result) {
+            //         if(result.code==0&&result.data.length>0){
+            //             _This.userInfo.headImgUrl=result.data[0];
+            //         }
+            //     },
+            //     error: function(result) {
+            //         //console.log("error-- result------>", result)
+            //     }
+            // });
+        },
+
+        fsubmit () {
+            console.log("提交....")
+            let _This = this;
+            _This.editShow = false;
+            _This.viewShow = true;
+            
+        },
+        fback () {
+            let _This = this;
+            _This.editShow = true;
+            _This.viewShow = false;
+            
+        },
+        fconfirm () {
+
+        },
 
 
-        fAjaxFileUpload(){},
-        chooseImage(){},
 
 
 

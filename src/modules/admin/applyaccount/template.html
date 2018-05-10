@@ -13,7 +13,8 @@
                 <span class="msg-r"><b class="line-red">| &nbsp; </b>必填信息</span>    
             </div>
 
-            <div class="edit-content">
+            <!-- 创建 -->
+            <div class="edit-content" v-show="editShow">
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >诊所名称</span><b class="line-row-red"></b>
@@ -54,7 +55,7 @@
                     <div class="row-item" >
                         <span class="row-item-title f-14" >营业执照复印件</span><b class="line-row-tra"></b>
                         <el-upload
-                        style="margin-left: 180px;margin-top: -20px;height: 20px;"
+                            style="margin-left: 180px;margin-top: -20px;"
                             class="upload-demo"
                             action="https://jsonplaceholder.typicode.com/posts/"
                             :on-preview="handlePreview"
@@ -69,20 +70,25 @@
                         </el-upload>
                     </div>
                 </div>
-                <!-- <div class="row-ct">
+                <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >医疗机构许可证</span><b class="line-row-tra"></b>
                         <el-upload
-                            style="margin-left: 180px;margin-top: -20px;height: 20px;"
+                            style="margin-left: 180px;margin-top: -20px;"
                             class="upload-demo"
                             action="https://jsonplaceholder.typicode.com/posts/"
-                            :on-change="handleChange"
+                            :on-preview="handlePreview"
+                            :on-remove="handleRemove"
+                            :before-remove="beforeRemove"
+                            multiple
+                            :limit="1"
+                            :on-exceed="handleExceed"
                             :file-list="fileList">
-                            <el-button size="small" type="primary">选择文件</el-button>
-                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                            <el-button size="small" type="primary">点击上传</el-button>
+                            <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                         </el-upload>
                     </div>
-                </div> -->
+                </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >诊所等级</span><b class="line-row-red"></b>
@@ -140,14 +146,106 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" ></span><b class="line-row-tra"></b>
-                        <el-button type="primary">提交申请</el-button>
+                        <el-button type="primary" @click.native="fsubmit">提交申请</el-button>
                     </div>
                 </div>
             </div>
 
 
+            <!-- 提交后 -->
+            <div class="edit-content" v-show="viewShow">
+                <div class="row-ct">
+                    <div class="row-item" >
+                        <span class="row-item-title f-14" >诊所名称</span>
+                        <span class="row-item-value"></span>
+                    </div> 
+                </div>
+                <div class="row-ct">
+                    <div class="row-item" >
+                        <span class="row-item-title f-14" >诊所管理员用户名</span>
+                        <span class="row-item-value"></span>
+                    </div>
+                </div>
+                <div class="row-ct">
+                    <div class="row-item" >
+                        <span class="row-item-title f-14" >隶属集团（可选）</span>
+                        <span class="row-item-value"></span>
+                    </div>
+                </div>
+                <div class="row-ct">
+                    <div class="row-item" >
+                        <span class="row-item-title f-14" >联系人姓名</span>
+                        <span class="row-item-value"></span>
+                    </div>
+                </div>
+                <div class="row-ct">
+                    <div class="row-item" >
+                        <span class="row-item-title f-14" >联系人手机号码</span>
+                        <span class="row-item-value"></span>    
+                    </div>
+                </div>
+                <div class="row-ct">
+                    <div class="row-item" >
+                        <span class="row-item-title f-14" >联系人邮箱</span>
+                        <span class="row-item-value"></span>
+                    </div>
+                </div>
+                <div class="row-ct">
+                    <div class="row-item" >
+                        <span class="row-item-title f-14" >营业执照复印件</span>
+                        <span class="row-item-value"></span>
+                    </div>
+                </div>
+                <div class="row-ct">
+                    <div class="row-item" >
+                        <span class="row-item-title f-14" >医疗机构许可证</span>
+                        <span class="row-item-value"></span>
+                    </div>
+                </div>
+                <div class="row-ct">
+                    <div class="row-item" >
+                        <span class="row-item-title f-14" >诊所等级</span>
+                        <span class="row-item-value"></span>
+                    </div>
+                </div>
+                <div class="row-ct">
+                    <div class="row-item" >
+                        <span class="row-item-title f-14" >主营项目</span>
+                        <span class="row-item-value"></span>
+                    </div>
+                </div>
+                <div class="row-ct">
+                    <div class="row-item" >
+                        <span class="row-item-title f-14 v-a-top" >LOGO</span>
+                        <div v-if="true" class="logo-img" :style="{backgroundImage:['url('+defaultImg+')']}"></div>
+                        
+                    </div>
+                </div>
 
-            
+                <div class="row-ct">
+                    <div class="row-item" >
+                        <span class="row-item-title f-14 v-a-top" >营业时间</span>
+                        <span class="row-item-value"></span>
+                    </div> 
+                </div>
+                <div class="row-ct">
+                    <div class="row-item">
+                        <span class="row-item-title f-14">详细地址</span>
+                        <input type="text" class="row-item-value el-input__inner"  style="width: 280px;"  value=""  disabled/>
+                        
+                    </div>
+                </div>
+
+                <div class="row-ct" >
+                    <div id="map-content-view" class="map-ct"></div>
+                </div>
+                <div class="row-ct" style="text-align:center;">
+                    <div class="row-item" >
+                        <el-button type="primary" @click.native="fconfirm">确认提交</el-button>
+                        <el-button type="primary" @click.native="fback">返&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;回</el-button>
+                    </div>
+                </div>
+            </div>
         </div>
         
     </div>
