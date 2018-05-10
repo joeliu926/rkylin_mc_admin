@@ -54,17 +54,22 @@
                     <div class="row-item" >
                         <span class="row-item-title f-14" >营业执照复印件</span><b class="line-row-tra"></b>
                         <el-upload
-                            style="margin-left: 180px;margin-top: -20px;height: 20px;"
+                        style="margin-left: 180px;margin-top: -20px;height: 20px;"
                             class="upload-demo"
                             action="https://jsonplaceholder.typicode.com/posts/"
-                            :on-change="handleChange"
+                            :on-preview="handlePreview"
+                            :on-remove="handleRemove"
+                            :before-remove="beforeRemove"
+                            multiple
+                            :limit="1"
+                            :on-exceed="handleExceed"
                             :file-list="fileList">
-                            <el-button size="small" type="primary">选择文件</el-button>
+                            <el-button size="small" type="primary">点击上传</el-button>
                             <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                         </el-upload>
                     </div>
                 </div>
-                <div class="row-ct">
+                <!-- <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >医疗机构许可证</span><b class="line-row-tra"></b>
                         <el-upload
@@ -74,10 +79,10 @@
                             :on-change="handleChange"
                             :file-list="fileList">
                             <el-button size="small" type="primary">选择文件</el-button>
-                            <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                         </el-upload>
                     </div>
-                </div>
+                </div> -->
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >诊所等级</span><b class="line-row-red"></b>
@@ -124,7 +129,7 @@
                 <div class="row-ct">
                     <div class="row-item">
                         <span class="row-item-title f-14">详细地址</span>
-                        <input type="text" class="row-item-value el-input__inner" placeholder="地址" style="width: 280px;" id="suggestId" value="" v-model="address" />
+                        <input type="text" class="row-item-value el-input__inner" placeholder="请输入地址" style="width: 280px;" id="suggestId" value="" v-model="address" />
                         <div id="searchResultPanel" ref="dropaddress" style="border:1px solid #C0C0C0;width:250px;height:auto;display: none;"></div>
                     </div>
                 </div>
