@@ -10,7 +10,8 @@ export default {
             addImg:require("../../../common/img/add-img-icon.png"),
             defaultImg:require("../../../common/img/add-img-icon.png"),
             //imgUploadUrl: "/api/caseHeader/uploadCasePicture",
-            imgUploadUrl: CONSTANT.fileUpload+"api/caseHeader/uploadCasePicture",
+            //imgUploadUrl:CONSTANT.fileUpload+"attachment/upload",
+            imgUploadUrl:"/uploadimg_dev/attachment/upload",
             editShow: true,
             viewShow: false,
             checkUserhVal: "",
@@ -41,6 +42,34 @@ export default {
             //caseId:'',
             oProductCode: [], //诊疗项目id集合1111
             oSelectProductItems: [], //选中的诊疗项目1111
+            caseDetail: {
+                id: "",
+                caseName: "",
+                doctor: {
+                },
+                products: [],
+                operationDate: "",
+                customerGender: "",
+                customerAge: "",
+                customerLogo: {
+                    "name": "",
+                    "url": ""
+                },
+                beforePicture: {
+                    "name": "",
+                    "url": ""
+                },
+                afterPicture: {
+                    "name": "",
+                    "url": ""
+                },
+                contentList: [
+                  
+                ]
+            },
+
+
+
             fileList:[],
             
             address:"",
@@ -77,74 +106,61 @@ export default {
         fsubmit () {
 
             /*验证判断必填项*/
-            // if(!/\S{1,}/.test(this.oClinic.name)){
-            //     this.$message.error("诊所名称不能为空");
-            //     return false;
-            // }
-            // if(!/\S{1,}/.test(this.checkUserhVal)){
-            //     this.$message.error("诊所管理员用户名不能为空");
-            //     return false;
-            // }
-            // if(!/\S{1,}/.test(this.oClinic.linkname)){
-            //     this.$message.error("诊所管理员用户名不能为空");
-            //     return false;
-            // }
-            // let phone= this.oClinic.phone;
-            // if((!VAREGEX.isMobile(phone))&&!VAREGEX.isTel(phone)){ //VAREGEX
-            //     this.$message.error("请输入正确的电话号码");
-            //     return false;
-            // }
-            // if((!VAREGEX.isEmail(this.oClinic.email)) && (this.oClinic.email != "") ){ //VAREGEX
-            //     this.$message.error("请输入正确的邮箱");
-            //     return false;
-            // }
-            // if(!/\S{2,}/.test(this.oClinic.businessTime)){
-            //     this.$message.error("请输入营业时间");
-            //     return false;
-            // }
-            if(!/\S{2,}/.test(this.address)){
+            if(!/\S{1,}/.test(this.oClinic.name)){
+                this.$message.error("诊所名称不能为空");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.checkUserhVal)){
+                this.$message.error("诊所管理员用户名不能为空");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.oClinic.linkname)){
+                this.$message.error("诊所管理员用户名不能为空");
+                return false;
+            }
+            let phone= this.oClinic.phone;
+            if((!VAREGEX.isMobile(phone))&&!VAREGEX.isTel(phone)){ //VAREGEX
+                this.$message.error("请输入正确的电话号码");
+                return false;
+            }
+            if((!VAREGEX.isEmail(this.oClinic.email)) && (this.oClinic.email != "") ){ //VAREGEX
+                this.$message.error("请输入正确的邮箱");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.oClinic.businessTime)){
+                this.$message.error("请输入营业时间");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.address)){
                 this.$message.error("请输入详细地址");
                 return false;
             }
+            if(!/\S{1,}/.test(this.oClinic.qualification)){
+                this.$message.error("请选择诊所等级");
+                return false;
+            }
+            if( this.caseDetail.products.length < 1){
+                this.$message.error("请选择主营项目");
+                return false;
+            }
+            
 
             let _This = this;
             _This.editShow = false;
             _This.viewShow = true;
             _This.address0 = _This.address;
 
-            let mapview = new BMap.Map("map-content-view");    // 创建Map实例
-            // console.log(_This.mapPoint);
-            // map.centerAndZoom(new BMap.Point(_This.mapPoint.lng, _This.mapPoint.lat), 17);  // 初始化地图,设置中心点坐标和地图级别
-          
-            mapview.centerAndZoom(new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat), 18);
-            // var new_point = new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat);
-            // mapview.panTo(new_point);
-
-           
-
-            //_This.fGetSpecificAddress(_This.mapPoint.point);
-            console.log(_This.mapPoint.point);
-            // let pointView = {};
-            // pointView.lng = _This.mapPoint.point.lng + 0.008774687519;
-            // pointView.lat = _This.mapPoint.point.lat + 0.00374531687912;
-            // console.log(pointView);
-            // mapview.centerAndZoom(pointView, 18);
-            //mapview.centerAndZoom(_This.mapPoint.point, 17);
-
-            console.log("lng",_This.mapPoint.point.lng);
-            console.log("lat",_This.mapPoint.point.lat);
-            //map.enableScrollWheelZoom(true);
-            //mapview.clearOverlays();
-            let marker = new BMap.Marker(new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat)); // 创建标注，为要查询的地方对应的经纬度
-            console.log("lng",_This.mapPoint.point.lng);
-            console.log("lat",_This.mapPoint.point.lat);
+            let mapview = new BMap.Map("map-content-view");  
+            mapview.centerAndZoom(new BMap.Point(_This.mapPoint.point.lng - 8, _This.mapPoint.point.lat + 5), 18);
+            mapview.clearOverlays();
+            let marker = new BMap.Marker(new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat)); // 创建标注
+            //console.log("lng",_This.mapPoint.point.lng);
+            //console.log("lat",_This.mapPoint.point.lat);
             mapview.addOverlay(marker);
-            let infoWindow1 = new BMap.InfoWindow("<p style='font-size:14px;'>" + _This.address + "</p>");
-            console.log("address",_This.address);
-            marker.openInfoWindow(infoWindow1);
+            let infoWindow = new BMap.InfoWindow("<p style='font-size:14px;'>" + _This.address + "</p>");
+            //console.log("address",_This.address);
+            marker.openInfoWindow(infoWindow);
             marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
-
-
         
         },
         fback () {
@@ -153,9 +169,7 @@ export default {
             _This.viewShow = false;
             
         },
-        fconfirm () {
-            
-            
+        fconfirm () {    
         },
 
         fCheckUser () {
@@ -204,7 +218,7 @@ export default {
                             _This.searchData=result.data;
                         }
                     }
-                });
+                },'',store.state.userInfo.token);
             } else {
                 this.searchData = [];
             }
@@ -242,22 +256,7 @@ export default {
         },
 
 
-
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
-        },
-        handlePreview(file) {
-           
-            console.log(file);
-        },
-        handleExceed(files, fileList) {
-            this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-        },
-        beforeRemove(file, fileList) {
-            return this.$confirm(`确定移除 ${ file.name }？`);
-        },
-
-        chooseImage(){
+        fChooseImg(){
             this.$refs.uploadImg.click();
         },
         fAjaxFileUpload(e){
@@ -277,7 +276,8 @@ export default {
             var fdata = new FormData();
             fdata.append('imgFile', imgFile);
             fdata.append('user',"test");
-            
+            //debugger;
+            console.log(fdata);
             _.ajax({
                 url: _This.imgUploadUrl,
                 type: 'POST',
@@ -292,6 +292,20 @@ export default {
                     //console.log("error-- result------>", result)
                 }
             });
+        },
+
+        handleRemove(file, fileList) {
+            console.log(file, fileList);
+        },
+        handlePreview(file) {
+           
+            console.log(file);
+        },
+        handleExceed(files, fileList) {
+            this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+        },
+        beforeRemove(file, fileList) {
+            return this.$confirm(`确定移除 ${ file.name }？`);
         },
 
 
@@ -349,10 +363,7 @@ export default {
             let _This=this;
             let geoc = new BMap.Geocoder();
             geoc.getLocation(new BMap.Point(cpoint.lng, cpoint.lat), function(res) {
-                //console.log("res22-------->", res);
-                let addComp = res.addressComponents;
-                //console.log(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
-                //_This.oClinicData.address=res.address;
+                let addComp = res.addressComponents; 
                 _This.countryName="中国";
                 _This.provName=addComp.province;
                 _This.cityName=addComp.city;
@@ -360,8 +371,6 @@ export default {
                 _This.coordinate=cpoint.lng+","+cpoint.lat;
                 _This.street=addComp.street;
                 _This.streetNumber=addComp.streetNumber;
-                //console.log("_This.oClinicData222-------->", _This.oClinicData);
-
             });
         },
         

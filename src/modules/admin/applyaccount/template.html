@@ -127,10 +127,10 @@
                         </div>
                         <div class="row-item" style="padding: 10px 0 0 95px;">
                                 <div class="major-project">
-                                    <!-- <template v-for="item in caseDetail.products"> -->
-                                            <template>
+                                    <template v-for="item in caseDetail.products">
+                                    
                                         <span class="goodat f-14">
-                                            <!-- {{item.productName}} -->豆腐干豆腐
+                                            {{item.productName}}
                                             <i class="el-icon-pa-close i-close-p" @click="fRemoveProduct(item)"></i>
                                         </span>
                                         
@@ -143,11 +143,13 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14 v-a-top" >LOGO</span><b class="line-row-red" style="vertical-align: top;display: inline-block;height: 20px;"></b>
-                        <input type="file" style="display: none;" ref="uploadImg" @change="fAjaxFileUpload">
-                        <div v-if="false" class="logo-img" :style="{backgroundImage:['url('+defaultImg+')']}" @click="chooseImage"></div>
+                        <!-- <input type="file" style="display: none;" ref="uploadImg" @change="fAjaxFileUpload"> -->
+                        <!-- <div v-if="false" class="logo-img" :style="{backgroundImage:['url('+defaultImg+')']}" @click="chooseImage"></div>
                         <div v-if="true" class="logo-img"   @click="chooseImage">
                             <img style="width: 100%;height: 100%;" src="../../../common/img/add-img-icon.png">
-                        </div>
+                        </div> -->
+                        <input type="file" style="display: none;" ref="uploadImg" @change="fAjaxFileUpload">
+                        <div class="logo-img" :style="{backgroundImage:['url('+defaultImg+')']}" @click="fChooseImg"></div>
                     </div>
                 </div>
 
@@ -212,7 +214,7 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >联系人邮箱</span>
-                        <span class="row-item-value">{{oClinic.phone}}</span>
+                        <span class="row-item-value">{{oClinic.email}}</span>
                     </div>
                 </div>
                 <div class="row-ct">
@@ -235,8 +237,8 @@
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
-                        <span class="row-item-title f-14" >主营项目</span>
-                        <span class="row-item-value">{{oClinic.qualification}}</span>
+                        <span class="row-item-title f-14" >主营项目</span>   
+                            <span class="row-item-value" v-for="item in caseDetail.products">{{item.productName}}&nbsp;&nbsp;</span> 
                     </div>
                 </div>
                 <div class="row-ct">
@@ -262,7 +264,7 @@
                     </div>
                 </div>
 
-                <div class="row-ct" >
+                <div class="row-ct">
                     <div id="map-content-view" class="map-ct"></div>
                 </div>
                 <div class="row-ct" style="text-align:center;">
