@@ -1,5 +1,7 @@
 import tree from '../tree/index.vue';
 import store from '../../../vuex';
+import CONSTANT from '../../../common/utils/constants.js';
+import VAREGEX from '../../../common/utils/valregex.js';
 export default {
     components: {
         tree},
@@ -7,34 +9,55 @@ export default {
         return {
             addImg:require("../../../common/img/add-img-icon.png"),
             defaultImg:require("../../../common/img/add-img-icon.png"),
+            //imgUploadUrl: "/api/caseHeader/uploadCasePicture",
+            imgUploadUrl: CONSTANT.fileUpload+"api/caseHeader/uploadCasePicture",
+            editShow: true,
+            viewShow: false,
+            checkUserhVal: "",
+            usable: false,
+            occupyUser: false,
+            oClinic:{
+                "name": "", // 诊所名称
+                "admin": "", // 诊所管理员用户名
+                "group": "",
+                "linkname": "", // 联系人姓名
+                "phone": "",
+                "email": "",
+                "qualification": "", //诊所等级
+                "businessTime": "",
+                "countryName": "", //国家
+                "provName": "北京", //省份
+                "cityName": "", //城市名
+                "districtName": "", //地址
+                "coordinate": "", //坐标
+
+
+
+
+            },
+            oClinicRank: ["诊所", "门诊部", "整形外科医院", "一级民营医院", "二级医院", "三级甲等医院"],
+            productItem:"",//单项诊疗项目 
+            searchData:[],
+            //caseId:'',
+            oProductCode: [], //诊疗项目id集合1111
+            oSelectProductItems: [], //选中的诊疗项目1111
             fileList:[],
-            grade:[
-                {
-                    value: '选项2',
-                    label: '双皮奶'
-                },
-            ],
-            gradeVal:"",
-            projects:[
-                {
-                    value: '选项3',
-                    label: '双皮奶'
-                },
-            ],
-            projectsVal:"",
+            
             address:"",
-            oCreatData:{}
+            mapPoint:{},
+            oCreatData:{},
+            name:""
         };
     },
     created() {
-       // this.getRolelist(1);
+      
     },
     mounted(){
         let _This=this;
-        _This.contentMap=new BMap.Map("map-content");
-        let map =_This.contentMap;
+        _This.contentMap = new BMap.Map("map-content");
+        let map = _This.contentMap;
         map.centerAndZoom("北京", 12);
-        map.enableScrollWheelZoom(true);
+        //map.enableScrollWheelZoom(true);
         let autoDrop = new BMap.Autocomplete( //建立一个自动完成的对象
             {
                 "input": "suggestId",
@@ -47,25 +70,229 @@ export default {
             _This.address=selectValue;
             _This.fSearchAddressByAddress(18);
         });
+        
+       
     },
-    methods: {
+    methods: {      
+        fsubmit () {
+
+            /*验证判断必填项*/
+            // if(!/\S{1,}/.test(this.oClinic.name)){
+            //     this.$message.error("诊所名称不能为空");
+            //     return false;
+            // }
+            // if(!/\S{1,}/.test(this.checkUserhVal)){
+            //     this.$message.error("诊所管理员用户名不能为空");
+            //     return false;
+            // }
+            // if(!/\S{1,}/.test(this.oClinic.linkname)){
+            //     this.$message.error("诊所管理员用户名不能为空");
+            //     return false;
+            // }
+            // let phone= this.oClinic.phone;
+            // if((!VAREGEX.isMobile(phone))&&!VAREGEX.isTel(phone)){ //VAREGEX
+            //     this.$message.error("请输入正确的电话号码");
+            //     return false;
+            // }
+            // if((!VAREGEX.isEmail(this.oClinic.email)) && (this.oClinic.email != "") ){ //VAREGEX
+            //     this.$message.error("请输入正确的邮箱");
+            //     return false;
+            // }
+            // if(!/\S{2,}/.test(this.oClinic.businessTime)){
+            //     this.$message.error("请输入营业时间");
+            //     return false;
+            // }
+            if(!/\S{2,}/.test(this.address)){
+                this.$message.error("请输入详细地址");
+                return false;
+            }
+
+            let _This = this;
+            _This.editShow = false;
+            _This.viewShow = true;
+            _This.address0 = _This.address;
+
+            let mapview = new BMap.Map("map-content-view");    // 创建Map实例
+            // console.log(_This.mapPoint);
+            // map.centerAndZoom(new BMap.Point(_This.mapPoint.lng, _This.mapPoint.lat), 17);  // 初始化地图,设置中心点坐标和地图级别
+          
+            mapview.centerAndZoom(new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat), 18);
+            // var new_point = new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat);
+            // mapview.panTo(new_point);
+
+           
+
+            //_This.fGetSpecificAddress(_This.mapPoint.point);
+            console.log(_This.mapPoint.point);
+            // let pointView = {};
+            // pointView.lng = _This.mapPoint.point.lng + 0.008774687519;
+            // pointView.lat = _This.mapPoint.point.lat + 0.00374531687912;
+            // console.log(pointView);
+            // mapview.centerAndZoom(pointView, 18);
+            //mapview.centerAndZoom(_This.mapPoint.point, 17);
+
+            console.log("lng",_This.mapPoint.point.lng);
+            console.log("lat",_This.mapPoint.point.lat);
+            //map.enableScrollWheelZoom(true);
+            //mapview.clearOverlays();
+            let marker = new BMap.Marker(new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat)); // 创建标注，为要查询的地方对应的经纬度
+            console.log("lng",_This.mapPoint.point.lng);
+            console.log("lat",_This.mapPoint.point.lat);
+            mapview.addOverlay(marker);
+            let infoWindow1 = new BMap.InfoWindow("<p style='font-size:14px;'>" + _This.address + "</p>");
+            console.log("address",_This.address);
+            marker.openInfoWindow(infoWindow1);
+            marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+
+
+        
+        },
+        fback () {
+            let _This = this;
+            _This.editShow = true;
+            _This.viewShow = false;
+            
+        },
+        fconfirm () {
+            
+            
+        },
+
+        fCheckUser () {
+            let _This = this;
+            if (_This.checkUserhVal != "") {
+                let fdata = {
+                    "checkType": 1,
+                    "checkContent": _This.checkUserhVal
+                }
+                _.ajax({
+                    url: '/oms/api/user/check',
+                    type: 'POST',
+                    data: fdata,
+                    success: function(result) {
+                        console.log(result);
+                        if(result.code == 3010){
+                            _This.usable = true;
+                            _This.occupyUser = false;
+                        } else if (result.code == 3011) {
+                            _This.usable = false;
+                            _This.occupyUser = true;
+                        }
+                    },
+                    error: function(result) {
+                        //console.log("error-- result------>", result)
+                    }
+                })
+            } else {
+                _This.usable = false;
+                _This.occupyUser = false;
+            }
+            
+        },
+        //获取诊疗项目列表
+        fAutoProduct(query) {
+            if (query !== '') {
+                this.loading = false;
+                var _This = this;
+                console.log('store.state.userInfo', store.state.userInfo.loginName);
+                _.ajax({
+                    url: '/api/product/searchList?loginName='+ store.state.userInfo.loginName +'&productName=' + query,
+                    //url: '/api/product/searchList?productName=' + query,
+                    method: 'GET',
+                    success: function (result) {
+                        if(result.code==0){
+                            _This.searchData=result.data;
+                        }
+                    }
+                });
+            } else {
+                this.searchData = [];
+            }
+        },
+        /**
+         * 选中诊疗项目
+         * @param item
+         */
+        fSelectProductItem(item){
+            let _This=this;
+             if(_This.oProductCode.indexOf(item.id))
+             {
+                 _This.oProductCode.push(item.id);
+                 delete item.page;
+                 if(item.productName){
+                     _This.caseDetail.products.push(item);
+                 }
+             }
+            this.productItem ="";
+        },
+         /**
+         * 删除诊疗项目
+         * @param item
+         */
+        fRemoveProduct(item){
+
+            // console.log("============","+++++++++++++",this.oProductCode);
+            let _This=this;
+            let index= _This.caseDetail.products.indexOf(item);
+            if(index>=0){
+                _This.oProductCode.splice(index,1);
+                _This.caseDetail.products.splice(index,1);
+            }
+            // console.log(this.caseDetail.products);
+        },
+
+
+
         handleRemove(file, fileList) {
             console.log(file, fileList);
-          },
-          handlePreview(file) {
+        },
+        handlePreview(file) {
+           
             console.log(file);
-          },
-          handleExceed(files, fileList) {
+        },
+        handleExceed(files, fileList) {
             this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-          },
-          beforeRemove(file, fileList) {
+        },
+        beforeRemove(file, fileList) {
             return this.$confirm(`确定移除 ${ file.name }？`);
-          },
+        },
 
+        chooseImage(){
+            this.$refs.uploadImg.click();
+        },
+        fAjaxFileUpload(e){
+            let _This = this;
+            var imgFile = e.target.files[0];
+            if(imgFile.size>5*1024*1024){
+                this.$message.error('图片大小不能超过5M！');
+                return false;
+            }
+            let aLogoType=[".jpg",".jpeg",".png",".bmp"];
+            let imgName = imgFile.name.substr(imgFile.name.lastIndexOf(".")).toLocaleLowerCase();
+            if(aLogoType.indexOf(imgName)<0){
+                _This.$message.error("上传图片格式错误");
+                return false;
+            }
 
-        fAjaxFileUpload(){},
-        chooseImage(){},
-
+            var fdata = new FormData();
+            fdata.append('imgFile', imgFile);
+            fdata.append('user',"test");
+            
+            _.ajax({
+                url: _This.imgUploadUrl,
+                type: 'POST',
+                data: fdata,
+                success: function(result) {
+                    console.log(result)
+                    if(result.code==0&&result.data.length>0){
+                        _This.userInfo.headImgUrl=result.data[0];
+                    }
+                },
+                error: function(result) {
+                    //console.log("error-- result------>", result)
+                }
+            });
+        },
 
 
         /**
@@ -84,14 +311,18 @@ export default {
                         return false;
                     }
                     var poi = searchResult.getPoi(0);
+                    _This.mapPoint = poi;
                     _This.fGetSpecificAddress(poi.point);
                     map.centerAndZoom(poi.point, msize);
                     map.clearOverlays();
                     var marker = new BMap.Marker(new BMap.Point(poi.point.lng, poi.point.lat)); // 创建标注，为要查询的地方对应的经纬度
+                    console.log("lng",poi.point.lng);
+                    console.log("lat",poi.point.lat);
                     map.addOverlay(marker);
                     var infoWindow = new BMap.InfoWindow("<p style='font-size:14px;'>" + addressText + "</p>");
                     marker.openInfoWindow(infoWindow);
                     marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+                    
                 });
                 localSearch.search(addressText);
             });

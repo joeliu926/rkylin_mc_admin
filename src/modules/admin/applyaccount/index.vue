@@ -81,25 +81,32 @@
 							background-repeat: no-repeat;
 							background-size: 100%;
 						}
-						.i-close-p {
-							position: absolute;
-							top: -5px;
-							right: -5px;
-							border-radius: 15px;
-							cursor: pointer;
-						}
-						.el-icon-pa-close:before {
-							color: #cc0000;
-						}
-						.goodat {
-							display: inline-block;
-							margin-right: 10px;
-							background: #9287EB;
-							padding: 3px 10px;
-							border-radius: 4px;
-							color: #ffffff;
-							position: relative;
-						}
+						.major-project {
+                            word-break: keep-all;
+                            width: 480px;
+                            display: inline-block;
+                            padding-left: 84px;
+                            box-sizing: border-box;
+                            .i-close-p {
+                                position: absolute;
+                                top: -5px;
+                                right: -5px;
+                                border-radius: 15px;
+                                cursor: pointer;
+                            }
+                            .el-icon-pa-close:before {
+                                color: #cc0000;
+                            }
+                            .goodat {
+                                position: relative;
+                                display: inline-block;
+                                margin: 0 8px 8px 0;
+                                background: #9287EB;
+                                padding: 3px 10px;
+                                border-radius: 4px;
+                                color: #ffffff;
+                            }
+                        }
 					}
 				}
 

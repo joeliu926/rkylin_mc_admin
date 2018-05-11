@@ -54,7 +54,7 @@ export default {
                 },{
                     id:'admin_sign_audit',
                     label: '审核申请',
-                    linkUrl:'/admin/accountaudit',
+                    linkUrl:'/admin/auditapply',
                     hightline:false,
                     needinit:false,
                     count:0,

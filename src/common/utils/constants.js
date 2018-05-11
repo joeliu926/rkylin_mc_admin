@@ -3,7 +3,7 @@
  */
 module.exports ={
     pageSize: 15,
-    host:"http://140.143.185.73:8085",
+    host:"https://sit-api.nihaomc.com",
     fileDownload:"",
     fileUpload:"https://nihaomc.com/uploadimg_dev/",
     wsReqUrl:"wss://nihaomc.com/websocket_dev/"

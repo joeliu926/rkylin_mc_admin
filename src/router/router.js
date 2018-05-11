@@ -13,7 +13,7 @@ var admin_tree = r => require.ensure([], () => r(require('../modules/admin/tree/
 
 
 var admin_sign_account = r => require.ensure([], () => r(require('../modules/admin/applyaccount/index.vue')), 'admin_sign_account');
-var admin_sign_audit = r => require.ensure([], () => r(require('../modules/admin/accountaudit/index.vue')), 'admin_sign_audit');
+var admin_sign_audit = r => require.ensure([], () => r(require('../modules/admin/auditapply/index.vue')), 'admin_sign_audit');
 
 
 
@@ -39,8 +39,8 @@ var routerConfig = {
                 nav:admin_nav
             }
         },{
-            name:'/admin/accountaudit',
-            path: '/admin/accountaudit',
+            name:'/admin/auditapply',
+            path: '/admin/auditapply',
             components:{
                 default:admin_sign_audit,
                 nav:admin_nav

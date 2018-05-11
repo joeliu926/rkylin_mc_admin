@@ -1,0 +1,65 @@
+<div class="audit-content">
+    <div class="fram-box audit-lbox">
+        <tree></tree>
+    </div><div class="fram-box audit-rbox">
+        <div class="out-box-border" style="padding: 12px;">
+            <div class="audit-text-ct">
+                <p class="f-14">线下签约</p>
+                <p class="f-16">创建诊所申请列表</p>
+            </div>
+
+            <div class="detail-edit-ct" style="box-sizing: border-box;">
+                <span class="msg-l">申请审核</span>
+               
+            </div>
+
+            <div class="detail-search">
+                <el-select v-model="dealvalue" placeholder="请选择">
+                    <el-option
+                        v-for="item in dealoptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                    </el-option>
+                </el-select>
+                <el-input placeholder="请输入" v-model="searchVal" @keyup.enter.native="" style="width: 200px;"></el-input>
+                <i class="el-icon-search icurse" @click=""></i>      
+            </div>
+
+            <!-- 表格 -->
+            <div class="customer-waiting-content">
+                    <table class="customer-table">
+                        <tr>
+                            <th>诊所名称</th><th>联系人</th><th>联系人手机</th><th>联系人邮箱</th><th>营业执照</th><th>许可证</th><th>申请日期</th><th>操作日期</th><th>操作</th>
+                        </tr>
+                        <template v-for="(oitem,oIndex) in applyList">
+                            <tr class="tr-end">
+                                <!-- <td>{{oitem.country}}</td>
+                                <td>
+                                    <img :src="oitem.logo" class="nav-user-img"/>
+                                    <span class="wx-t">{{oitem.wxNickname}}</span>
+                                </td>
+                                <td>{{oitem.name}}</td>
+                                <td :style="{display:[oitem.show!='1'?'':'none']}">{{oitem.phoneNum|phoneFilter}}
+                                    <img class="eye-img" v-if="oitem.phoneNum" src="../../../common/img/i-eye-close.png" @click="fSeaEndPhone(oIndex,'1')">
+                                </td>
+                                <td :style="{display:[oitem.show=='1'?'':'none']}">{{oitem.phoneNum}}
+                                    <img class="eye-img" v-if="oitem.phoneNum" src="../../../common/img/i-eye-open.png" @click="fSeaEndPhone(oIndex,'0')">
+                                </td>
+                                <td>{{oitem.field2}}</td>
+                                <td></td>
+                                <td>{{oitem.field1}} </td>         -->
+                            </tr>
+                        </template>
+                        
+                        <!-- <tr v-if="tableData.length < 1" style="text-align: center;">
+                            <td colspan="7">暂无数据</td>
+                        </tr> -->
+                    </table>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
