@@ -2,6 +2,7 @@
  * Created by JoeLiu on 2017-9-27.
  */
 import CONSTANT from './constants.js'
+import store from '../../vuex';
 var cacheNavMenus=[];
 var userResources=[];
 
@@ -19,21 +20,19 @@ module.exports = {
     ajax: function (arg,type,auth) {
         let opts = $.extend(true,{method:"POST"},arg);
         opts.dataType='json';
-        //opts.contentType= "json";
+    
         if(type=='withCredentials'){
             opts.xhrFields= {
                 withCredentials: true
             };
         }
-        //opts["Content-Type"]= "application/json";
+  
         opts.contentType= "application/json; charset=utf-8";
-        // opts.headers= {
-        //     //"Access-Control-Request-Headers":'*',
-        //     //"Content-Type":"application/json",
-        //     "authorization":auth
-        // };
+        opts.headers= {
+             "authorization":auth
+        };
 
-        //opts.crossDomain= true;
+        opts.crossDomain= true;
 
         opts.data = JSON.stringify(opts.data);
         if(opts.urlType=='full')
@@ -44,7 +43,7 @@ module.exports = {
             opts.url=CONSTANT.host+opts.url;
         }
         var successFn=opts.success;
-        opts.success=function(res){
+        opts.success=function(res, textStatus, request){
             if(res&&res.code==8002){
                // window.location.href="/login.html";
                 window.location.href="/#/login";
@@ -53,7 +52,7 @@ module.exports = {
             if(res&&res.code==8200){
                 return ;
             }
-            successFn&&successFn(res)
+            successFn&&successFn(res, textStatus, request)
         }
         return $.ajax(opts);
     },

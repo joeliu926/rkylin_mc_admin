@@ -48,17 +48,16 @@ export default {
                 return false;
             }
             _.ajax({
-                url: '/oss/api/user/login',
+                url: '/oms/api/user/login',
                 method: 'POST',
                 data:{
                     loginName:sUName,
                     password:sUPassword
                 },
-                success: function (res) {
+                success: function (res,textStatus, request) {
                     if(res.code==0) {
                         store.state.userInfo =res.data;
-                        localStorage.yxsz_userInfo=JSON.stringify(res.data);
-                         console.log('token',res.headers['authorization']);//  res.headers['authorization']
+                        localStorage.yxsz_userInfo=JSON.stringify(store.state.userInfo);
                         _this.$router.push("/");
                     }else if(res.code==3009)
                     {

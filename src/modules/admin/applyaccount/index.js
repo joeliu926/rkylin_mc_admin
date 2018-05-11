@@ -25,6 +25,14 @@ export default {
                 "email": "",
                 "qualification": "", //诊所等级
                 "businessTime": "",
+                "countryName": "", //国家
+                "provName": "北京", //省份
+                "cityName": "", //城市名
+                "districtName": "", //地址
+                "coordinate": "", //坐标
+
+
+
 
             },
             oClinicRank: ["诊所", "门诊部", "整形外科医院", "一级民营医院", "二级医院", "三级甲等医院"],
@@ -62,7 +70,7 @@ export default {
             _This.address=selectValue;
             _This.fSearchAddressByAddress(18);
         });
-
+        
        
     },
     methods: {      
@@ -104,13 +112,40 @@ export default {
             _This.viewShow = true;
             _This.address0 = _This.address;
 
-            var map = new BMap.Map("map-content-view");    // 创建Map实例
+            let mapview = new BMap.Map("map-content-view");    // 创建Map实例
             // console.log(_This.mapPoint);
             // map.centerAndZoom(new BMap.Point(_This.mapPoint.lng, _This.mapPoint.lat), 17);  // 初始化地图,设置中心点坐标和地图级别
           
-            _This.fGetSpecificAddress(_This.mapPoint.point);
+            mapview.centerAndZoom(new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat), 18);
+            // var new_point = new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat);
+            // mapview.panTo(new_point);
+
            
-            
+
+            //_This.fGetSpecificAddress(_This.mapPoint.point);
+            console.log(_This.mapPoint.point);
+            // let pointView = {};
+            // pointView.lng = _This.mapPoint.point.lng + 0.008774687519;
+            // pointView.lat = _This.mapPoint.point.lat + 0.00374531687912;
+            // console.log(pointView);
+            // mapview.centerAndZoom(pointView, 18);
+            //mapview.centerAndZoom(_This.mapPoint.point, 17);
+
+            console.log("lng",_This.mapPoint.point.lng);
+            console.log("lat",_This.mapPoint.point.lat);
+            //map.enableScrollWheelZoom(true);
+            //mapview.clearOverlays();
+            let marker = new BMap.Marker(new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat)); // 创建标注，为要查询的地方对应的经纬度
+            console.log("lng",_This.mapPoint.point.lng);
+            console.log("lat",_This.mapPoint.point.lat);
+            mapview.addOverlay(marker);
+            let infoWindow1 = new BMap.InfoWindow("<p style='font-size:14px;'>" + _This.address + "</p>");
+            console.log("address",_This.address);
+            marker.openInfoWindow(infoWindow1);
+            marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+
+
+        
         },
         fback () {
             let _This = this;
@@ -162,6 +197,7 @@ export default {
                 console.log('store.state.userInfo', store.state.userInfo.loginName);
                 _.ajax({
                     url: '/api/product/searchList?loginName='+ store.state.userInfo.loginName +'&productName=' + query,
+                    //url: '/api/product/searchList?productName=' + query,
                     method: 'GET',
                     success: function (result) {
                         if(result.code==0){
@@ -276,15 +312,17 @@ export default {
                     }
                     var poi = searchResult.getPoi(0);
                     _This.mapPoint = poi;
-                    console.log("bbbbbbbbbbb", _This.mapPoint)
                     _This.fGetSpecificAddress(poi.point);
                     map.centerAndZoom(poi.point, msize);
                     map.clearOverlays();
                     var marker = new BMap.Marker(new BMap.Point(poi.point.lng, poi.point.lat)); // 创建标注，为要查询的地方对应的经纬度
+                    console.log("lng",poi.point.lng);
+                    console.log("lat",poi.point.lat);
                     map.addOverlay(marker);
                     var infoWindow = new BMap.InfoWindow("<p style='font-size:14px;'>" + addressText + "</p>");
                     marker.openInfoWindow(infoWindow);
                     marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+                    
                 });
                 localSearch.search(addressText);
             });
