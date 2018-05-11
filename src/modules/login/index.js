@@ -48,7 +48,7 @@ export default {
                 return false;
             }
             _.ajax({
-                url: '/api/user/login',
+                url: '/oss/api/user/login',
                 method: 'POST',
                 data:{
                     loginName:sUName,
@@ -58,6 +58,7 @@ export default {
                     if(res.code==0) {
                         store.state.userInfo =res.data;
                         localStorage.yxsz_userInfo=JSON.stringify(res.data);
+                         console.log('token',res.headers['authorization']);//  res.headers['authorization']
                         _this.$router.push("/");
                     }else if(res.code==3009)
                     {
