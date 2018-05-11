@@ -26,8 +26,8 @@ module.exports = {
                 withCredentials: true
             };
         }
-  
-        opts.contentType= "application/json; charset=utf-8";
+
+        opts.contentType=opts.contentType?opts.contentType: "application/json; charset=utf-8";
         opts.headers= {
              "authorization":auth
         };

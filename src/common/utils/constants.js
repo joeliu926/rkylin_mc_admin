@@ -6,5 +6,6 @@ module.exports ={
     host:"https://sit-api.nihaomc.com",
     fileDownload:"",
     fileUpload:"https://nihaomc.com/uploadimg_dev/",
+    //fileUpload:"https://sit-api.nihaomc.com/uploadimg_dev/",
     wsReqUrl:"wss://nihaomc.com/websocket_dev/"
 };
