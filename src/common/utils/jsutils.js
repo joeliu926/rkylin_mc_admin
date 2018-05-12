@@ -26,15 +26,20 @@ module.exports = {
                 withCredentials: true
             };
         }
+   
+        if(opts.contentType != false){
+            opts.contentType = "application/json; charset=utf-8";
+            opts.data = JSON.stringify(opts.data);
+        }
 
-        opts.contentType=opts.contentType?opts.contentType: "application/json; charset=utf-8";
+        //opts.contentType=opts.contentType==false?opts.contentType: "application/json; charset=utf-8";
         opts.headers= {
              "authorization":auth
         };
 
         opts.crossDomain= true;
 
-        opts.data = JSON.stringify(opts.data);
+        
         if(opts.urlType=='full')
         {
             opts.url=opts.url;

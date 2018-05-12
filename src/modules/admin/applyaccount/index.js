@@ -6,11 +6,9 @@ export default {
     components: { tree },
     data () {
         return {
-            //addImg:require("../../../common/img/add-img-icon.png"),
             defaultImg:require("../../../common/img/add-img-icon.png"),
-            //imgUploadUrl: "/api/caseHeader/uploadCasePicture",
-            imgUploadUrl:CONSTANT.fileUpload+"attachment/upload",
-            //imgUploadUrl:"/uploadimg_dev/attachment/upload",
+            // imgUploadUrl:CONSTANT.fileUpload+"attachment/upload",
+            imgUploadUrl:CONSTANT.fileUpload+"/oms/api/files/attachment/upload",
             file1:"",
             file2:"",
             editShow: true,
@@ -22,7 +20,7 @@ export default {
                 "name": "", // 诊所名称
                 "admin": "", // 诊所管理员用户名
                 "group": "",
-                "linkname": "", // 联系人姓名
+                "linkman": "", // 联系人姓名
                 "phone": "",
                 "email": "",
                 "qualification": "", //诊所等级
@@ -64,11 +62,11 @@ export default {
                 ]
             },
             fileList:[],
-            
             address:"",
             mapPoint:{},
             oCreatData:{},
-            name:""
+            businessLicense:"",
+            licence:""
         };
     },
     created() {
@@ -93,7 +91,7 @@ export default {
             _This.fSearchAddressByAddress(18);
         });
         
-        console.log('store.state.userInfo', store.state.userInfo.loginName);
+        //console.log('store.state.userInfo', store.state.userInfo.loginName);
     },
     methods: {      
         fsubmit () {
@@ -107,8 +105,8 @@ export default {
                 this.$message.error("诊所管理员用户名不能为空");
                 return false;
             }
-            if(!/\S{1,}/.test(this.oClinic.linkname)){
-                this.$message.error("诊所管理员用户名不能为空");
+            if(!/\S{1,}/.test(this.oClinic.linkman)){
+                this.$message.error("联系人姓名不能为空");
                 return false;
             }
             let phone= this.oClinic.phone;
@@ -120,14 +118,6 @@ export default {
                 this.$message.error("请输入正确的邮箱");
                 return false;
             }
-            if(!/\S{1,}/.test(this.oClinic.businessTime)){
-                this.$message.error("请输入营业时间");
-                return false;
-            }
-            if(!/\S{1,}/.test(this.address)){
-                this.$message.error("请输入详细地址");
-                return false;
-            }
             if(!/\S{1,}/.test(this.oClinic.qualification)){
                 this.$message.error("请选择诊所等级");
                 return false;
@@ -136,24 +126,27 @@ export default {
                 this.$message.error("请选择主营项目");
                 return false;
             }
+            if(!/\S{1,}/.test(this.oClinic.businessTime)){
+                this.$message.error("请输入营业时间");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.address)){
+                this.$message.error("请输入详细地址");
+                return false;
+            }
             
 
             let _This = this;
             _This.editShow = false;
             _This.viewShow = true;
             _This.address0 = _This.address;
-           
-
 
             let mapview = new BMap.Map("map-content-view");  
             mapview.centerAndZoom(new BMap.Point(_This.mapPoint.point.lng - 8, _This.mapPoint.point.lat + 5), 18);
             mapview.clearOverlays();
             let marker = new BMap.Marker(new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat)); // 创建标注
-            //console.log("lng",_This.mapPoint.point.lng);
-            //console.log("lat",_This.mapPoint.point.lat);
             mapview.addOverlay(marker);
             let infoWindow = new BMap.InfoWindow("<p style='font-size:14px;'>" + _This.address + "</p>");
-            //console.log("address",_This.address);
             marker.openInfoWindow(infoWindow);
             marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
         
@@ -173,36 +166,41 @@ export default {
             majorBusiness = majorBusiness.substr(0,majorBusiness.length-1 );
             console.log(majorBusiness)
             let parms = {
-                parentTenantId: store.state.userInfo.clinic[0].clinicId,
-                name: _This.oClinic.name,
-                phone: _This.oClinic.phone,
-                loginName: store.state.userInfo.loginName,
-                under: _This.oClinic.group,
-                linkman: _This.oClinic.linkman,
-                qualification: _This.oClinic.qualification,
-                majorBusiness: majorBusiness,
-                businessTime: _This.oClinic.businessTime,
-                address: _This.address
+                "parentTenantId": store.state.userInfo.clinic[0].clinicId,
+                "name": _This.oClinic.name,
+                "phone": _This.oClinic.phone,
+                "loginName": store.state.userInfo.loginName,
+                "under": _This.oClinic.group,
+                "linkman": _This.oClinic.linkman,
+                "qualification": _This.oClinic.qualification,
+                "majorBusiness": majorBusiness,
+                "businessTime": _This.oClinic.businessTime,
+                "address": _This.address,
+                "businessLicense": _This.businessLicense, // 营业执照
+                "licence": _This.licence, // 许可证
+                "logo": _This.defaultImg,
             }
-            console.log(parms);
+            //console.log(parms);
             _.ajax({
-                url: '/oms/api/clinic/create',
+                url: '/api/clinic/create',
                 type: 'POST',
                 data: parms,
                 success: function(result) {
                     console.log(result);
-                    if(result.code == 0 && result.data){
+                    if(result.code == 0){
                         _This.$message({message: '添加成功',
                             type: 'success'
                         });
+                        setTimeout(function(){
+                            //window.location.reload();
+                            _This.$router.push("/admin/auditapply");
+                        },1000);
                     } 
                 },
                 error: function(result) {
                     //console.log("error-- result------>", result)
                 }
             })
-
-
         },
 
         fCheckUser () {
@@ -291,12 +289,6 @@ export default {
         fAjaxFileUpload(e, filenum){
             let _This = this;
             var imgFile = e.target.files[0];
-
-            if (filenum == 1){
-                _This.file1 = imgFile.name;
-            } else if (filenum == 2) {
-                _This.file2 = imgFile.name;
-            }
             
             if(imgFile.size>5*1024*1024){
                 this.$message.error('图片大小不能超过5M！');
@@ -313,7 +305,6 @@ export default {
             var fdata = new FormData();
             fdata.append('imgFile', imgFile);
             fdata.append('user',"test");
-            //debugger;
             console.log(fdata);
             console.log(_This.imgUploadUrl);
 
@@ -322,12 +313,22 @@ export default {
                 type: 'POST',
                 data: fdata,
                 urlType: 'full',
-                processData: false,
-                contentType:'multipart/form-data',
+                contentType: false,
+				processData: false,
                 success: function(result) {
                     console.log(result)
                     if(result.code==0&&result.data.length>0){
-                        _This.userInfo.headImgUrl=result.data[0];
+
+                        if (filenum == 1){
+                            _This.file1 = imgFile.name;
+                            _This.businessLicense = result.data[0]
+                        } else if (filenum == 2) {
+                            _This.file2 = imgFile.name;
+                            _This.licence = result.data[0]
+                        } else {
+                            _This.defaultImg = result.data[0];
+                        }
+                       
                     }
                 },
                 error: function(result) {
@@ -384,7 +385,7 @@ export default {
             });
 
         },
-         /**
+        /**
          * 定位城市
          */
         fLocationCity(addText,callback){
@@ -406,15 +407,15 @@ export default {
             let geoc = new BMap.Geocoder();
             geoc.getLocation(new BMap.Point(cpoint.lng, cpoint.lat), function(res) {
                 let addComp = res.addressComponents; 
-                _This.countryName="中国";
-                _This.provName=addComp.province;
-                _This.cityName=addComp.city;
-                _This.districtName =addComp.district;
-                _This.coordinate=cpoint.lng+","+cpoint.lat;
-                _This.street=addComp.street;
-                _This.streetNumber=addComp.streetNumber;
+                _This.oClinic.countryName="中国";
+                _This.oClinic.provName=addComp.province;
+                _This.oClinic.cityName=addComp.city;
+                _This.oClinic.districtName =addComp.district;
+                _This.oClinic.coordinate=cpoint.lng+","+cpoint.lat;
+                _This.oClinic.street=addComp.street;
+                _This.oClinic.streetNumber=addComp.streetNumber;
             });
-        },
+        }
         
     }
 }
