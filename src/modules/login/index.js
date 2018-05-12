@@ -54,10 +54,10 @@ export default {
                     loginName:sUName,
                     password:sUPassword
                 },
-                success: function (res) {
+                success: function (res,textStatus, request) {
                     if(res.code==0) {
                         store.state.userInfo =res.data;
-                        localStorage.yxsz_userInfo=JSON.stringify(res.data);
+                        localStorage.yxsz_userInfo=JSON.stringify(store.state.userInfo);
                         _this.$router.push("/");
                     }else if(res.code==3009)
                     {
