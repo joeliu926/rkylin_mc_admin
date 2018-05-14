@@ -169,7 +169,7 @@ export default {
                 "parentTenantId": store.state.userInfo.clinic[0].clinicId,
                 "name": _This.oClinic.name,
                 "phone": _This.oClinic.phone,
-                "loginName": store.state.userInfo.loginName,
+                "adminLoginName": _This.checkUserhVal,
                 "under": _This.oClinic.group,
                 "linkman": _This.oClinic.linkman,
                 "qualification": _This.oClinic.qualification,
@@ -182,7 +182,7 @@ export default {
             }
             //console.log(parms);
             _.ajax({
-                url: '/api/clinic/create',
+                url: '/oms/api/clinic/create',
                 type: 'POST',
                 data: parms,
                 success: function(result) {
@@ -198,7 +198,7 @@ export default {
                     } 
                 },
                 error: function(result) {
-                    //console.log("error-- result------>", result)
+                    _This.$message.error('添加失败');
                 }
             })
         },
