@@ -38,7 +38,7 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >联系人姓名</span><b class="line-row-red"></b>
-                        <el-input class="row-item-value" v-model="oClinic.linkname" placeholder=""></el-input>
+                        <el-input class="row-item-value" v-model="oClinic.linkman" placeholder=""></el-input>
                     </div>
                 </div>
                 <div class="row-ct">
@@ -56,7 +56,7 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >营业执照复印件</span><b class="line-row-tra"></b>
-                        <el-upload
+                        <!-- <el-upload
                             style="margin-left: 180px;margin-top: -20px;"
                             class="upload-demo"
                             action="https://jsonplaceholder.typicode.com/posts/"
@@ -67,15 +67,15 @@
                             :limit="1"
                             :on-exceed="handleExceed"
                             :file-list="fileList">
-                            <el-button size="small" type="primary">点击上传</el-button>
-                            <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-                        </el-upload>
+                            <el-button size="small" type="primary">点击上传</el-button> 
+                        </el-upload> -->
+                        <input type="file" @change="fAjaxFileUpload($event,1)">
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >医疗机构许可证</span><b class="line-row-tra"></b>
-                        <el-upload
+                        <!-- <el-upload
                             style="margin-left: 180px;margin-top: -20px;"
                             class="upload-demo"
                             action="https://jsonplaceholder.typicode.com/posts/"
@@ -87,8 +87,8 @@
                             :on-exceed="handleExceed"
                             :file-list="fileList">
                             <el-button size="small" type="primary">点击上传</el-button>
-                            <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-                        </el-upload>
+                        </el-upload> -->
+                        <input type="file" @change="fAjaxFileUpload($event,2)">
                     </div>
                 </div>
                 <div class="row-ct">
@@ -127,10 +127,10 @@
                         </div>
                         <div class="row-item" style="padding: 10px 0 0 95px;">
                                 <div class="major-project">
-                                    <!-- <template v-for="item in caseDetail.products"> -->
-                                            <template>
+                                    <template v-for="item in caseDetail.products">
+                                    
                                         <span class="goodat f-14">
-                                            <!-- {{item.productName}} -->豆腐干豆腐
+                                            {{item.productName}}
                                             <i class="el-icon-pa-close i-close-p" @click="fRemoveProduct(item)"></i>
                                         </span>
                                         
@@ -144,10 +144,9 @@
                     <div class="row-item" >
                         <span class="row-item-title f-14 v-a-top" >LOGO</span><b class="line-row-red" style="vertical-align: top;display: inline-block;height: 20px;"></b>
                         <input type="file" style="display: none;" ref="uploadImg" @change="fAjaxFileUpload">
-                        <div v-if="false" class="logo-img" :style="{backgroundImage:['url('+defaultImg+')']}" @click="chooseImage"></div>
-                        <div v-if="true" class="logo-img"   @click="chooseImage">
-                            <img style="width: 100%;height: 100%;" src="../../../common/img/add-img-icon.png">
-                        </div>
+                        <div class="logo-img" :style="{backgroundImage:['url('+defaultImg+')']}" @click="fChooseImg"></div>
+
+                        
                     </div>
                 </div>
 
@@ -200,7 +199,7 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >联系人姓名</span>
-                        <span class="row-item-value">{{oClinic.linkname}}</span>
+                        <span class="row-item-value">{{oClinic.linkman}}</span>
                     </div>
                 </div>
                 <div class="row-ct">
@@ -212,19 +211,19 @@
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >联系人邮箱</span>
-                        <span class="row-item-value">{{oClinic.phone}}</span>
+                        <span class="row-item-value">{{oClinic.email}}</span>
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >营业执照复印件</span>
-                        <span class="row-item-value"></span>
+                        <span class="row-item-value">{{file1}}</span>
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
                         <span class="row-item-title f-14" >医疗机构许可证</span>
-                        <span class="row-item-value"></span>
+                        <span class="row-item-value">{{file2}}</span>
                     </div>
                 </div>
                 <div class="row-ct">
@@ -235,8 +234,8 @@
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
-                        <span class="row-item-title f-14" >主营项目</span>
-                        <span class="row-item-value">{{oClinic.qualification}}</span>
+                        <span class="row-item-title f-14" >主营项目</span>   
+                            <span class="row-item-value" v-for="item in caseDetail.products">#{{item.productName}}&nbsp;&nbsp;</span> 
                     </div>
                 </div>
                 <div class="row-ct">
@@ -262,7 +261,7 @@
                     </div>
                 </div>
 
-                <div class="row-ct" >
+                <div class="row-ct">
                     <div id="map-content-view" class="map-ct"></div>
                 </div>
                 <div class="row-ct" style="text-align:center;">

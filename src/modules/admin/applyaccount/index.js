@@ -3,14 +3,14 @@ import store from '../../../vuex';
 import CONSTANT from '../../../common/utils/constants.js';
 import VAREGEX from '../../../common/utils/valregex.js';
 export default {
-    components: {
-        tree},
+    components: { tree },
     data () {
         return {
-            addImg:require("../../../common/img/add-img-icon.png"),
             defaultImg:require("../../../common/img/add-img-icon.png"),
-            //imgUploadUrl: "/api/caseHeader/uploadCasePicture",
-            imgUploadUrl: CONSTANT.fileUpload+"api/caseHeader/uploadCasePicture",
+            // imgUploadUrl:CONSTANT.fileUpload+"attachment/upload",
+            imgUploadUrl:CONSTANT.fileUpload+"/oms/api/files/attachment/upload",
+            file1:"",
+            file2:"",
             editShow: true,
             viewShow: false,
             checkUserhVal: "",
@@ -20,7 +20,7 @@ export default {
                 "name": "", // 诊所名称
                 "admin": "", // 诊所管理员用户名
                 "group": "",
-                "linkname": "", // 联系人姓名
+                "linkman": "", // 联系人姓名
                 "phone": "",
                 "email": "",
                 "qualification": "", //诊所等级
@@ -30,23 +30,43 @@ export default {
                 "cityName": "", //城市名
                 "districtName": "", //地址
                 "coordinate": "", //坐标
-
-
-
-
             },
             oClinicRank: ["诊所", "门诊部", "整形外科医院", "一级民营医院", "二级医院", "三级甲等医院"],
             productItem:"",//单项诊疗项目 
             searchData:[],
             //caseId:'',
             oProductCode: [], //诊疗项目id集合1111
-            oSelectProductItems: [], //选中的诊疗项目1111
+            caseDetail: {
+                id: "",
+                caseName: "",
+                doctor: {
+                },
+                products: [],
+                operationDate: "",
+                customerGender: "",
+                customerAge: "",
+                customerLogo: {
+                    "name": "",
+                    "url": ""
+                },
+                beforePicture: {
+                    "name": "",
+                    "url": ""
+                },
+                afterPicture: {
+                    "name": "",
+                    "url": ""
+                },
+                contentList: [
+                  
+                ]
+            },
             fileList:[],
-            
             address:"",
             mapPoint:{},
             oCreatData:{},
-            name:""
+            businessLicense:"",
+            licence:""
         };
     },
     created() {
@@ -71,80 +91,64 @@ export default {
             _This.fSearchAddressByAddress(18);
         });
         
-       
+        //console.log('store.state.userInfo', store.state.userInfo.loginName);
     },
     methods: {      
         fsubmit () {
 
             /*验证判断必填项*/
-            // if(!/\S{1,}/.test(this.oClinic.name)){
-            //     this.$message.error("诊所名称不能为空");
-            //     return false;
-            // }
-            // if(!/\S{1,}/.test(this.checkUserhVal)){
-            //     this.$message.error("诊所管理员用户名不能为空");
-            //     return false;
-            // }
-            // if(!/\S{1,}/.test(this.oClinic.linkname)){
-            //     this.$message.error("诊所管理员用户名不能为空");
-            //     return false;
-            // }
-            // let phone= this.oClinic.phone;
-            // if((!VAREGEX.isMobile(phone))&&!VAREGEX.isTel(phone)){ //VAREGEX
-            //     this.$message.error("请输入正确的电话号码");
-            //     return false;
-            // }
-            // if((!VAREGEX.isEmail(this.oClinic.email)) && (this.oClinic.email != "") ){ //VAREGEX
-            //     this.$message.error("请输入正确的邮箱");
-            //     return false;
-            // }
-            // if(!/\S{2,}/.test(this.oClinic.businessTime)){
-            //     this.$message.error("请输入营业时间");
-            //     return false;
-            // }
-            if(!/\S{2,}/.test(this.address)){
+            if(!/\S{1,}/.test(this.oClinic.name)){
+                this.$message.error("诊所名称不能为空");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.checkUserhVal)){
+                this.$message.error("诊所管理员用户名不能为空");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.oClinic.linkman)){
+                this.$message.error("联系人姓名不能为空");
+                return false;
+            }
+            let phone= this.oClinic.phone;
+            if((!VAREGEX.isMobile(phone))&&!VAREGEX.isTel(phone)){ //VAREGEX
+                this.$message.error("请输入正确的电话号码");
+                return false;
+            }
+            if((!VAREGEX.isEmail(this.oClinic.email)) && (this.oClinic.email != "") ){ //VAREGEX
+                this.$message.error("请输入正确的邮箱");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.oClinic.qualification)){
+                this.$message.error("请选择诊所等级");
+                return false;
+            }
+            if( this.caseDetail.products.length < 1){
+                this.$message.error("请选择主营项目");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.oClinic.businessTime)){
+                this.$message.error("请输入营业时间");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.address)){
                 this.$message.error("请输入详细地址");
                 return false;
             }
+            
 
             let _This = this;
             _This.editShow = false;
             _This.viewShow = true;
             _This.address0 = _This.address;
 
-            let mapview = new BMap.Map("map-content-view");    // 创建Map实例
-            // console.log(_This.mapPoint);
-            // map.centerAndZoom(new BMap.Point(_This.mapPoint.lng, _This.mapPoint.lat), 17);  // 初始化地图,设置中心点坐标和地图级别
-          
-            mapview.centerAndZoom(new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat), 18);
-            // var new_point = new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat);
-            // mapview.panTo(new_point);
-
-           
-
-            //_This.fGetSpecificAddress(_This.mapPoint.point);
-            console.log(_This.mapPoint.point);
-            // let pointView = {};
-            // pointView.lng = _This.mapPoint.point.lng + 0.008774687519;
-            // pointView.lat = _This.mapPoint.point.lat + 0.00374531687912;
-            // console.log(pointView);
-            // mapview.centerAndZoom(pointView, 18);
-            //mapview.centerAndZoom(_This.mapPoint.point, 17);
-
-            console.log("lng",_This.mapPoint.point.lng);
-            console.log("lat",_This.mapPoint.point.lat);
-            //map.enableScrollWheelZoom(true);
-            //mapview.clearOverlays();
-            let marker = new BMap.Marker(new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat)); // 创建标注，为要查询的地方对应的经纬度
-            console.log("lng",_This.mapPoint.point.lng);
-            console.log("lat",_This.mapPoint.point.lat);
+            let mapview = new BMap.Map("map-content-view");  
+            mapview.centerAndZoom(new BMap.Point(_This.mapPoint.point.lng - 8, _This.mapPoint.point.lat + 5), 18);
+            mapview.clearOverlays();
+            let marker = new BMap.Marker(new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat)); // 创建标注
             mapview.addOverlay(marker);
-            let infoWindow1 = new BMap.InfoWindow("<p style='font-size:14px;'>" + _This.address + "</p>");
-            console.log("address",_This.address);
-            marker.openInfoWindow(infoWindow1);
+            let infoWindow = new BMap.InfoWindow("<p style='font-size:14px;'>" + _This.address + "</p>");
+            marker.openInfoWindow(infoWindow);
             marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
-
-
         
         },
         fback () {
@@ -153,9 +157,50 @@ export default {
             _This.viewShow = false;
             
         },
-        fconfirm () {
-            
-            
+        fconfirm () {   
+            let _This = this;
+            let majorBusiness = "";
+            _This.caseDetail.products.forEach(pro => {
+                majorBusiness += pro.productName + "/" 
+            });
+            majorBusiness = majorBusiness.substr(0,majorBusiness.length-1 );
+            console.log(majorBusiness)
+            let parms = {
+                "parentTenantId": store.state.userInfo.clinic[0].clinicId,
+                "name": _This.oClinic.name,
+                "phone": _This.oClinic.phone,
+                "loginName": store.state.userInfo.loginName,
+                "under": _This.oClinic.group,
+                "linkman": _This.oClinic.linkman,
+                "qualification": _This.oClinic.qualification,
+                "majorBusiness": majorBusiness,
+                "businessTime": _This.oClinic.businessTime,
+                "address": _This.address,
+                "businessLicense": _This.businessLicense, // 营业执照
+                "licence": _This.licence, // 许可证
+                "logo": _This.defaultImg,
+            }
+            //console.log(parms);
+            _.ajax({
+                url: '/api/clinic/create',
+                type: 'POST',
+                data: parms,
+                success: function(result) {
+                    console.log(result);
+                    if(result.code == 0){
+                        _This.$message({message: '添加成功',
+                            type: 'success'
+                        });
+                        setTimeout(function(){
+                            //window.location.reload();
+                            _This.$router.push("/admin/auditapply");
+                        },1000);
+                    } 
+                },
+                error: function(result) {
+                    //console.log("error-- result------>", result)
+                }
+            })
         },
 
         fCheckUser () {
@@ -194,7 +239,6 @@ export default {
             if (query !== '') {
                 this.loading = false;
                 var _This = this;
-                console.log('store.state.userInfo', store.state.userInfo.loginName);
                 _.ajax({
                     url: '/api/product/searchList?loginName='+ store.state.userInfo.loginName +'&productName=' + query,
                     //url: '/api/product/searchList?productName=' + query,
@@ -204,7 +248,7 @@ export default {
                             _This.searchData=result.data;
                         }
                     }
-                });
+                },'',store.state.userInfo.token);
             } else {
                 this.searchData = [];
             }
@@ -230,18 +274,68 @@ export default {
          * @param item
          */
         fRemoveProduct(item){
-
-            // console.log("============","+++++++++++++",this.oProductCode);
             let _This=this;
             let index= _This.caseDetail.products.indexOf(item);
             if(index>=0){
                 _This.oProductCode.splice(index,1);
                 _This.caseDetail.products.splice(index,1);
             }
-            // console.log(this.caseDetail.products);
         },
 
 
+        fChooseImg(){
+            this.$refs.uploadImg.click();
+        },
+        fAjaxFileUpload(e, filenum){
+            let _This = this;
+            var imgFile = e.target.files[0];
+            
+            if(imgFile.size>5*1024*1024){
+                this.$message.error('图片大小不能超过5M！');
+                return false;
+            }
+            let aLogoType=[".jpg",".jpeg",".png",".bmp"];
+            let imgName = imgFile.name.substr(imgFile.name.lastIndexOf(".")).toLocaleLowerCase();
+            
+            if(aLogoType.indexOf(imgName)<0){
+                _This.$message.error("上传图片格式错误");
+                return false;
+            }
+
+            var fdata = new FormData();
+            fdata.append('imgFile', imgFile);
+            fdata.append('user',"test");
+            console.log(fdata);
+            console.log(_This.imgUploadUrl);
+
+            _.ajax({
+                url: _This.imgUploadUrl,
+                type: 'POST',
+                data: fdata,
+                urlType: 'full',
+                contentType: false,
+				processData: false,
+                success: function(result) {
+                    console.log(result)
+                    if(result.code==0&&result.data.length>0){
+
+                        if (filenum == 1){
+                            _This.file1 = imgFile.name;
+                            _This.businessLicense = result.data[0]
+                        } else if (filenum == 2) {
+                            _This.file2 = imgFile.name;
+                            _This.licence = result.data[0]
+                        } else {
+                            _This.defaultImg = result.data[0];
+                        }
+                       
+                    }
+                },
+                error: function(result) {
+                    //console.log("error-- result------>", result)
+                }
+            },'',store.state.userInfo.token);
+        },
 
         handleRemove(file, fileList) {
             console.log(file, fileList);
@@ -255,43 +349,6 @@ export default {
         },
         beforeRemove(file, fileList) {
             return this.$confirm(`确定移除 ${ file.name }？`);
-        },
-
-        chooseImage(){
-            this.$refs.uploadImg.click();
-        },
-        fAjaxFileUpload(e){
-            let _This = this;
-            var imgFile = e.target.files[0];
-            if(imgFile.size>5*1024*1024){
-                this.$message.error('图片大小不能超过5M！');
-                return false;
-            }
-            let aLogoType=[".jpg",".jpeg",".png",".bmp"];
-            let imgName = imgFile.name.substr(imgFile.name.lastIndexOf(".")).toLocaleLowerCase();
-            if(aLogoType.indexOf(imgName)<0){
-                _This.$message.error("上传图片格式错误");
-                return false;
-            }
-
-            var fdata = new FormData();
-            fdata.append('imgFile', imgFile);
-            fdata.append('user',"test");
-            
-            _.ajax({
-                url: _This.imgUploadUrl,
-                type: 'POST',
-                data: fdata,
-                success: function(result) {
-                    console.log(result)
-                    if(result.code==0&&result.data.length>0){
-                        _This.userInfo.headImgUrl=result.data[0];
-                    }
-                },
-                error: function(result) {
-                    //console.log("error-- result------>", result)
-                }
-            });
         },
 
 
@@ -328,7 +385,7 @@ export default {
             });
 
         },
-         /**
+        /**
          * 定位城市
          */
         fLocationCity(addText,callback){
@@ -349,21 +406,16 @@ export default {
             let _This=this;
             let geoc = new BMap.Geocoder();
             geoc.getLocation(new BMap.Point(cpoint.lng, cpoint.lat), function(res) {
-                //console.log("res22-------->", res);
-                let addComp = res.addressComponents;
-                //console.log(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
-                //_This.oClinicData.address=res.address;
-                _This.countryName="中国";
-                _This.provName=addComp.province;
-                _This.cityName=addComp.city;
-                _This.districtName =addComp.district;
-                _This.coordinate=cpoint.lng+","+cpoint.lat;
-                _This.street=addComp.street;
-                _This.streetNumber=addComp.streetNumber;
-                //console.log("_This.oClinicData222-------->", _This.oClinicData);
-
+                let addComp = res.addressComponents; 
+                _This.oClinic.countryName="中国";
+                _This.oClinic.provName=addComp.province;
+                _This.oClinic.cityName=addComp.city;
+                _This.oClinic.districtName =addComp.district;
+                _This.oClinic.coordinate=cpoint.lng+","+cpoint.lat;
+                _This.oClinic.street=addComp.street;
+                _This.oClinic.streetNumber=addComp.streetNumber;
             });
-        },
+        }
         
     }
 }
