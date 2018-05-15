@@ -1,4 +1,4 @@
-<div class="audit-content">
+<div class="audit-content" id="audit-content">
     <div class="fram-box audit-lbox">
         <tree></tree>
     </div><div class="fram-box audit-rbox">
@@ -9,12 +9,10 @@
             </div>
 
             <div class="detail-edit-ct" style="box-sizing: border-box;">
-                <span class="msg-l">申请审核</span>
-               
+                <span class="msg-l">申请审核</span>               
             </div>
-
             <div class="detail-search">
-                <el-select v-model="dealvalue" placeholder="请选择">
+                <el-select v-model="dealvalue" placeholder="请选择" @change="currentStatus">
                     <el-option
                         v-for="item in dealoptions"
                         :key="item.value"
@@ -22,8 +20,8 @@
                         :value="item.value">
                     </el-option>
                 </el-select>
-                <el-input placeholder="请输入" v-model="searchVal" @keyup.enter.native="" style="width: 200px;"></el-input>
-                <i class="el-icon-search icurse" @click=""></i>      
+                <el-input placeholder="请输入" v-model="searchVal" @keyup.enter.native="searchList" style="width: 200px;"></el-input>
+                <i class="el-icon-search icurse" @click="searchList"></i>      
             </div>
 
             <!-- 表格 -->
@@ -34,32 +32,96 @@
                         </tr>
                         <template v-for="(oitem,oIndex) in applyList">
                             <tr class="tr-end">
-                                <!-- <td>{{oitem.country}}</td>
+                                 <td>{{oitem.name}}</td>
                                 <td>
-                                    <img :src="oitem.logo" class="nav-user-img"/>
-                                    <span class="wx-t">{{oitem.wxNickname}}</span>
+                                    <span class="wx-t">{{oitem.linkman}}</span>
                                 </td>
-                                <td>{{oitem.name}}</td>
-                                <td :style="{display:[oitem.show!='1'?'':'none']}">{{oitem.phoneNum|phoneFilter}}
-                                    <img class="eye-img" v-if="oitem.phoneNum" src="../../../common/img/i-eye-close.png" @click="fSeaEndPhone(oIndex,'1')">
+                                <td>{{oitem.phone}}</td>
+                                <td>{{oitem.email}}</td>
+                                <td style="max-width:20%">
+                                    <el-popover trigger="click" placement="right" width="80" v-if="oitem.businessLicense"><img :src="oitem.businessLicense" width="30%" /><el-button slot="reference">预览</el-button></el-popover><el-button  v-if="oitem.businessLicense"><a href="oitem.businessLicense" download=""><img :src="oitem.businessLicense" alt="" width="0">下载</a></el-button>
+                                    <span v-if="!oitem.businessLicense">无</span>
                                 </td>
-                                <td :style="{display:[oitem.show=='1'?'':'none']}">{{oitem.phoneNum}}
-                                    <img class="eye-img" v-if="oitem.phoneNum" src="../../../common/img/i-eye-open.png" @click="fSeaEndPhone(oIndex,'0')">
+                                <td style="max-width:20%">
+                                    <el-popover trigger="click" placement="right" width="80" v-if="oitem.license"><img :src="oitem.license" width="30%" alt="" /><el-button slot="reference">预览</el-button></el-popover><el-button v-if="oitem.license"><a href="oitem.license" download=""><img :src="oitem.license" alt="" width="0">下载</a></a></el-button>
+                                    <span v-if="!oitem.license">无</span>
                                 </td>
-                                <td>{{oitem.field2}}</td>
-                                <td></td>
-                                <td>{{oitem.field1}} </td>         -->
+                                <td>{{oitem.createTime|filterTime(oitem)}}</td>
+                                <td>{{oitem.optTime|filterTime(oitem)}}</td>
+                                <td style="width:16%" >
+                                    <!-- <el-select v-model="oitem.actionVal"  placeholder="请选择" @change="changeStatus(oitem)"  >                                       
+                                        <el-option
+                                            v-for="item in actionList"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.value">
+                                        </el-option>
+                                    </el-select>                                     -->
+                                    <el-button type="primary" @click="changeStatus(oitem,1)" v-if="dealvalue=='0'||dealvalue=='2'" >核准</el-button> 
+                                    <el-button type="error" @click="changeStatus(oitem,2)" v-if="dealvalue=='0'||dealvalue=='1'">拒绝</el-button>     
+                                </td>                                                                
                             </tr>
                         </template>
-                        
-                        <!-- <tr v-if="tableData.length < 1" style="text-align: center;">
-                            <td colspan="7">暂无数据</td>
-                        </tr> -->
-                    </table>
+                        <template style="height: 100%;">
+                            <el-dialog
+                            :visible.sync="dialogVisible"
+                             center                            
+                            >
+                            <div class="alowed" v-if="oitem.actionVal=='1'">
+                             <span class="tip-text">请提供开通账户所需信息</span>
+                             <span class="tip-text">{{oitem.name}}</span>
+                             <div class="block" style="text-align: center;padding-top: 30px">
+                                    <span class="demonstration">使用有效期至：</span>
+                                    <!-- <span class="demonstration">{{dateValue}}</span> -->
+                                    <el-date-picker
+                                      v-model="dateValue"
+                                      type="date"
+                                      placeholder="选择日期" 
+                                      value-format="yyyy 年 MM 月 dd 日"
+                                      format="yyyy 年 MM 月 dd 日"
+                                     >
+                                    </el-date-picker>
+                                  </div>
+                                  <div class="money" style="text-align: center;padding-top: 20px">
+                                      <span>付款金额： <el-input placeholder=0 style="width:100px" :value='price' type="number" min=0></el-input>   元</span>
+                                  </div>
+                            </div>
+                            <div class="refused" v-if="oitem.actionVal=='2'" style="text-align: center">
+                                 <span class="tip-text">您确定需要拒绝以下诊所的开通申请吗</span>
+                                 <span class="tip-text">{{oitem.name}}</span>
+                                 <div style="padding: 20px 0">原因：</div>
+                                 <el-input
+                                 type="textarea"
+                                 :rows="4"
+                                 placeholder="此处输入拒绝原因，不得少于10个字"
+                                 v-model="reason"
+                                 style="width: 230px"
+                                 :minlength=10
+                                 >                        
+                                 </el-input>
+                            </div>                        
+                              <span slot="footer" class="dialog-footer">
+                                 <el-button type="primary" @click="confirm(oitem)">确 定</el-button>       
+                               </span>                           
+                            </el-dialog>
+                        </template> 
+                         <tr v-if="applyList.length < 1" style="text-align: center;">
+                            <td colspan="9">暂无数据</td>
+                        </tr> 
+                    </table>                   
+                    <!--分页组件-->
+                <div class="rbox-pagination-align">
+                    <el-pagination
+                            class="el-pagination"
+                            @current-change="handleCurrentChange"
+                            layout="prev, pager, next"
+                            :page-size="pageSize"
+                            :total="count"
+                            >
+                    </el-pagination>
+                </div>               
             </div>
-
-
-
         </div>
-    </div>
+    </div>  
 </div>
+

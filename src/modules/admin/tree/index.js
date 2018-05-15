@@ -89,7 +89,17 @@ export default {
                         let subMenus=JSON.parse(JSON.stringify(m));
                         subMenus.children=[];
                         m.children&&m.children.forEach(ms=>{
-                            subMenus.children.push(ms);
+
+                            if(ms.id=='admin_sign_audit'){
+                                if(store.state.userInfo.type=='tenantAdmin'){
+                                    subMenus.children.push(ms);
+                                }
+
+                            }
+                            else{
+                                subMenus.children.push(ms);
+                            }
+                            
                         });
                         if(subMenus.children.length>0){
                             reduceMenus.push(subMenus);
