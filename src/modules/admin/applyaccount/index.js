@@ -8,7 +8,7 @@ export default {
         return {
             defaultImg:require("../../../common/img/add-img-icon.png"),
             // imgUploadUrl:CONSTANT.fileUpload+"attachment/upload",
-            imgUploadUrl:CONSTANT.fileUpload+"/oms/api/files/attachment/upload",
+            imgUploadUrl:CONSTANT.fileUpload+"api/files/attachment/upload",
             file1:"",
             file2:"",
             editShow: true,
@@ -77,7 +77,7 @@ export default {
         _This.contentMap = new BMap.Map("map-content");
         let map = _This.contentMap;
         map.centerAndZoom("北京", 12);
-        //map.enableScrollWheelZoom(true);
+        map.enableScrollWheelZoom(true);
         let autoDrop = new BMap.Autocomplete( //建立一个自动完成的对象
             {
                 "input": "suggestId",
@@ -89,8 +89,8 @@ export default {
             console.log(currentSelect);
             _This.address=selectValue;
             _This.fSearchAddressByAddress(18);
-        });
-        
+        })
+
         //console.log('store.state.userInfo', store.state.userInfo.loginName);
     },
     methods: {      
@@ -143,6 +143,7 @@ export default {
 
             let mapview = new BMap.Map("map-content-view");  
             mapview.centerAndZoom(new BMap.Point(_This.mapPoint.point.lng - 8, _This.mapPoint.point.lat + 5), 18);
+            mapview.enableScrollWheelZoom(true);
             mapview.clearOverlays();
             let marker = new BMap.Marker(new BMap.Point(_This.mapPoint.point.lng, _This.mapPoint.point.lat)); // 创建标注
             mapview.addOverlay(marker);
@@ -169,7 +170,7 @@ export default {
                 "parentTenantId": store.state.userInfo.clinic[0].clinicId,
                 "name": _This.oClinic.name,
                 "phone": _This.oClinic.phone,
-                "loginName": store.state.userInfo.loginName,
+                "adminLoginName": _This.checkUserhVal,
                 "under": _This.oClinic.group,
                 "linkman": _This.oClinic.linkman,
                 "qualification": _This.oClinic.qualification,
@@ -182,7 +183,7 @@ export default {
             }
             //console.log(parms);
             _.ajax({
-                url: '/api/clinic/create',
+                url: '/oms/api/clinic/create',
                 type: 'POST',
                 data: parms,
                 success: function(result) {
@@ -191,14 +192,10 @@ export default {
                         _This.$message({message: '添加成功',
                             type: 'success'
                         });
-                        setTimeout(function(){
-                            //window.location.reload();
-                            _This.$router.push("/admin/auditapply");
-                        },1000);
                     } 
                 },
                 error: function(result) {
-                    //console.log("error-- result------>", result)
+                    _This.$message.error('添加失败');
                 }
             })
         },
