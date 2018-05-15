@@ -73,19 +73,19 @@ export default {
                 tenantId:store.state.userInfo.tenantId,
                 //   pageSize:_this.pageSize, 
                 //   pageNo:num,            
-               // tenantId: 10096,
+                //tenantId: 10096,
                 clinicName: _this.searchVal,
                 checkStatus: _this.dealvalue
 
             }
-            console.log(postData)
+            console.log(store.state.userInfo)
             _.ajax({
                 url: '/oms/api/clinic/check/list?pageSize=' + _this.pageSize + "&pageNo=" + _this.pageNo,
                 method: 'POST',
                 data: postData,
                 success: function (result) {
                     if (result.code == 0) {                       
-                       
+                       console.log(result.data)
                         _this.applyList = result.data.list;
                         //_this.filterApplyList = _this.applyList
                         _this.count = result.data.count
