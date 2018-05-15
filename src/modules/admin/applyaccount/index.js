@@ -183,7 +183,7 @@ export default {
             }
             //console.log(parms);
             _.ajax({
-                url: '/oms/api/clinic/create',
+                url: '/api/clinic/create',
                 type: 'POST',
                 data: parms,
                 success: function(result) {
@@ -197,7 +197,7 @@ export default {
                 error: function(result) {
                     _This.$message.error('添加失败');
                 }
-            })
+            },'',store.state.userInfo.token);
         },
 
         fCheckUser () {
@@ -208,7 +208,7 @@ export default {
                     "checkContent": _This.checkUserhVal
                 }
                 _.ajax({
-                    url: '/oms/api/user/check',
+                    url: '/api/user/check',
                     type: 'POST',
                     data: fdata,
                     success: function(result) {
@@ -224,7 +224,7 @@ export default {
                     error: function(result) {
                         //console.log("error-- result------>", result)
                     }
-                })
+                },'',store.state.userInfo.token);
             } else {
                 _This.usable = false;
                 _This.occupyUser = false;
@@ -237,8 +237,8 @@ export default {
                 this.loading = false;
                 var _This = this;
                 _.ajax({
-                    url: '/api/product/searchList?loginName='+ store.state.userInfo.loginName +'&productName=' + query,
-                    //url: '/api/product/searchList?productName=' + query,
+                    url: CONSTANT.host_one+'/api/product/searchList?loginName='+ store.state.userInfo.loginName +'&productName=' + query,
+                    urlType:'full',
                     method: 'GET',
                     success: function (result) {
                         if(result.code==0){

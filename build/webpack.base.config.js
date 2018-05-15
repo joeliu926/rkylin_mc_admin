@@ -14,6 +14,7 @@ function resolve(relPath) {
 var sBaseUrl=process.argv[2]||"http://localhost:8023";
 var sWsUrl=process.argv[3]||"ws://localhost:8053/";
 var sUploadUrl=process.argv[4]||"https://nihaomc.com/uploadimg_test/";
+var sBaseUrl_one=process.argv[5]||"https://nihaomc.com/uploadimg_test/";
 var constantFile="../src/common/utils/constants.js";
 var constantPath=path.join(__dirname,constantFile);
 var constantData = fs.readFileSync(constantPath,'utf-8');
@@ -29,6 +30,11 @@ constantData = constantData.replace(/wsReqUrl:\s*\S+?,/,function (word){
 constantData = constantData.replace(/fileUpload:\s*\S+?,/,function (word){
     return 'fileUpload:"'+sUploadUrl+'",';
 });
+
+constantData = constantData.replace(/host_one:\s*\S+?,/,function (word){
+    return 'host_one:"'+sBaseUrl_one+'",';
+});
+
 
 console.log('constantData',constantData);
 fs.writeFileSync(constantPath, constantData, function(err) {

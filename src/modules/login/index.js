@@ -48,7 +48,7 @@ export default {
                 return false;
             }
             _.ajax({
-                url: '/oms/api/user/login',
+                url: '/api/user/login',
                 method: 'POST',
                 data:{
                     loginName:sUName,
