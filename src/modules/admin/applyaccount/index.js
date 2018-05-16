@@ -182,6 +182,7 @@ export default {
                 "majorBusiness": majorBusiness,
                 "businessTime": _This.oClinic.businessTime,
                 "address": _This.address,
+                "email": _This.oClinic.email,
                 "businessLicense": _This.businessLicense, // 营业执照
                 "licence": _This.licence, // 许可证
                 "logo": _This.defaultImg,
