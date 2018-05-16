@@ -294,7 +294,6 @@ export default {
         fAjaxFileUpload(e, filenum){
             let _This = this;
             var imgFile = e.target.files[0];
-            
             if(imgFile.size > 2*1024*1024){
                 this.$message.error('图片大小不能超过2M！');
                 return false;
@@ -334,9 +333,12 @@ export default {
                             _This.defaultImg = result.data[0];
                         }
                        
+                    } else {
+                        _This.$message.error("上传失败");
                     }
                 },
                 error: function(result) {
+                    _This.$message.error("上传失败");
                     //console.log("error-- result------>", result)
                 }
             },'',store.state.userInfo.token);
