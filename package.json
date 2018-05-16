@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node build/dev.js https://sit-api.nihaomc.com ws://localhost:8055/ https://nihaomc.com/oms_sit/",
-    "sdev": "node build/dist.js https://sit-api.nihaomc.com wss://nihaomc.com/websocket_dev/ https://nihaomc.com/oms_sit/",
-    "test": "node build/dist.js https://uat-api.nihaomc.com wss://nihaomc.com/websocket_test/ https://nihaomc.com/oms_uat/",
-    "dist": "node build/dist.js https://api.nihaomc.com wss://nihaomc.com/websocket/ https://nihaomc.com/oms_pro/",
+    "dev": "node build/dev.js https://nihaomc.com/oms_sit ws://localhost:8055/ https://nihaomc.com/oms_sit/ https://sit-api.nihaomc.com/",
+    "sdev": "node build/dist.js https://nihaomc.com/oms_sit wss://nihaomc.com/websocket_dev/ https://nihaomc.com/oms_sit/ https://sit-api.nihaomc.com/",
+    "test": "node build/dist.js  https://nihaomc.com/oms_uat wss://nihaomc.com/websocket_test/ https://nihaomc.com/oms_uat/ https://uat-api.nihaomc.com/",
+    "dist": "node build/dist.js https://nihaomc.com/oms wss://nihaomc.com/websocket/ https://nihaomc.com/oms/ https://api.nihaomc.com/",
     "_test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

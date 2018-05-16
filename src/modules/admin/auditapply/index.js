@@ -80,7 +80,7 @@ export default {
             }
             console.log(store.state.userInfo)
             _.ajax({
-                url: '/oms/api/clinic/check/list?pageSize=' + _this.pageSize + "&pageNo=" + _this.pageNo,
+                url: '/api/clinic/check/list?pageSize=' + _this.pageSize + "&pageNo=" + _this.pageNo,
                 method: 'POST',
                 data: postData,
                 success: function (result) {
@@ -152,7 +152,7 @@ export default {
             }
             console.log(postData)
             _.ajax({
-                url: '/oms/api/clinic/check',
+                url: '/api/clinic/check',
                 method: 'POST',
                 data: postData,
                 success: function (result) {
