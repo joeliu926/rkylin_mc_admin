@@ -66,7 +66,8 @@ export default {
             mapPoint:{},
             oCreatData:{},
             businessLicense:"",
-            licence:""
+            licence:"",
+            isDis: false
         };
     },
     created() {
@@ -126,6 +127,10 @@ export default {
                 this.$message.error("请选择主营项目");
                 return false;
             }
+            if(this.defaultImg.indexOf(":") == -1){
+                this.$message.error("请上传LOGO");
+                return false;
+            }
             if(!/\S{1,}/.test(this.oClinic.businessTime)){
                 this.$message.error("请输入营业时间");
                 return false;
@@ -135,7 +140,6 @@ export default {
                 return false;
             }
             
-
             let _This = this;
             _This.editShow = false;
             _This.viewShow = true;
@@ -156,7 +160,7 @@ export default {
             let _This = this;
             _This.editShow = true;
             _This.viewShow = false;
-            
+            _This.isDis = false;
         },
         fconfirm () {   
             let _This = this;
@@ -165,9 +169,10 @@ export default {
                 majorBusiness += pro.productName + "/" 
             });
             majorBusiness = majorBusiness.substr(0,majorBusiness.length-1 );
-            console.log(majorBusiness)
+            console.log(majorBusiness);
+    
             let parms = {
-                "parentTenantId": store.state.userInfo.clinic[0].clinicId,
+                "parentTenantId": store.state.userInfo.parentTenantId,
                 "name": _This.oClinic.name,
                 "phone": _This.oClinic.phone,
                 "adminLoginName": _This.checkUserhVal,
@@ -181,7 +186,11 @@ export default {
                 "licence": _This.licence, // 许可证
                 "logo": _This.defaultImg,
             }
-            //console.log(parms);
+            _This.oClinic = {};
+            console.log(parms);
+            _This.$message({message: '添加成功',
+                            type: 'success'
+                        });
             _.ajax({
                 url: '/api/clinic/create',
                 type: 'POST',
@@ -192,7 +201,10 @@ export default {
                         _This.$message({message: '添加成功',
                             type: 'success'
                         });
-                    } 
+                        _This.isDis = true;
+                    } else {
+                        _This.$message.error('添加失败');
+                    }
                 },
                 error: function(result) {
                     _This.$message.error('添加失败');
@@ -237,7 +249,7 @@ export default {
                 this.loading = false;
                 var _This = this;
                 _.ajax({
-                    url: CONSTANT.host_one+'/api/product/searchList?loginName='+ store.state.userInfo.loginName +'&productName=' + query,
+                    url: CONSTANT.host_one+'api/product/searchproductname?userId='+ parseInt(store.state.userInfo.id) +'&productName=' + query,
                     urlType:'full',
                     method: 'GET',
                     success: function (result) {
@@ -287,8 +299,8 @@ export default {
             let _This = this;
             var imgFile = e.target.files[0];
             
-            if(imgFile.size>5*1024*1024){
-                this.$message.error('图片大小不能超过5M！');
+            if(imgFile.size > 2*1024*1024){
+                this.$message.error('图片大小不能超过2M！');
                 return false;
             }
             let aLogoType=[".jpg",".jpeg",".png",".bmp"];
