@@ -187,11 +187,6 @@ export default {
                 "licence": _This.licence, // 许可证
                 "logo": _This.defaultImg,
             }
-            _This.oClinic = {};
-            console.log(parms);
-            _This.$message({message: '添加成功',
-                            type: 'success'
-                        });
             _.ajax({
                 url: '/api/clinic/create',
                 type: 'POST',
