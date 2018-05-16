@@ -127,6 +127,10 @@ export default {
                 this.$message.error("请选择主营项目");
                 return false;
             }
+            if(this.defaultImg.indexOf(":") == -1){
+                this.$message.error("请上传LOGO");
+                return false;
+            }
             if(!/\S{1,}/.test(this.oClinic.businessTime)){
                 this.$message.error("请输入营业时间");
                 return false;
@@ -136,7 +140,6 @@ export default {
                 return false;
             }
             
-
             let _This = this;
             _This.editShow = false;
             _This.viewShow = true;
