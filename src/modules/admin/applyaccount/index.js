@@ -246,7 +246,7 @@ export default {
                 this.loading = false;
                 var _This = this;
                 _.ajax({
-                    url: CONSTANT.host_one+'api/product/searchList?loginName='+ store.state.userInfo.loginName +'&productName=' + query,
+                    url: CONSTANT.host_one+'api/product/searchproductname?userId='+ parseInt(store.state.userInfo.id) +'&productName=' + query,
                     urlType:'full',
                     method: 'GET',
                     success: function (result) {
