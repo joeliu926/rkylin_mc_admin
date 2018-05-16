@@ -192,7 +192,9 @@ export default {
                         _This.$message({message: '添加成功',
                             type: 'success'
                         });
-                    } 
+                    } else {
+                        _This.$message.error('添加失败');
+                    }
                 },
                 error: function(result) {
                     _This.$message.error('添加失败');
