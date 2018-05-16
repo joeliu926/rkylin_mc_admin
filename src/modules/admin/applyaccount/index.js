@@ -66,7 +66,8 @@ export default {
             mapPoint:{},
             oCreatData:{},
             businessLicense:"",
-            licence:""
+            licence:"",
+            isDis: false
         };
     },
     created() {
@@ -156,7 +157,7 @@ export default {
             let _This = this;
             _This.editShow = true;
             _This.viewShow = false;
-            
+            _This.isDis = false;
         },
         fconfirm () {   
             let _This = this;
@@ -165,9 +166,10 @@ export default {
                 majorBusiness += pro.productName + "/" 
             });
             majorBusiness = majorBusiness.substr(0,majorBusiness.length-1 );
-            console.log(majorBusiness)
+            console.log(majorBusiness);
+    
             let parms = {
-                "parentTenantId": store.state.userInfo.clinic[0].clinicId,
+                "parentTenantId": store.state.userInfo.parentTenantId,
                 "name": _This.oClinic.name,
                 "phone": _This.oClinic.phone,
                 "adminLoginName": _This.checkUserhVal,
@@ -181,7 +183,11 @@ export default {
                 "licence": _This.licence, // 许可证
                 "logo": _This.defaultImg,
             }
-            //console.log(parms);
+            _This.oClinic = {};
+            console.log(parms);
+            _This.$message({message: '添加成功',
+                            type: 'success'
+                        });
             _.ajax({
                 url: '/api/clinic/create',
                 type: 'POST',
@@ -192,6 +198,7 @@ export default {
                         _This.$message({message: '添加成功',
                             type: 'success'
                         });
+                        _This.isDis = true;
                     } else {
                         _This.$message.error('添加失败');
                     }
@@ -239,7 +246,7 @@ export default {
                 this.loading = false;
                 var _This = this;
                 _.ajax({
-                    url: CONSTANT.host_one+'/api/product/searchList?loginName='+ store.state.userInfo.loginName +'&productName=' + query,
+                    url: CONSTANT.host_one+'api/product/searchList?loginName='+ store.state.userInfo.loginName +'&productName=' + query,
                     urlType:'full',
                     method: 'GET',
                     success: function (result) {
