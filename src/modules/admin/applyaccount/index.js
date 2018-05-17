@@ -170,7 +170,9 @@ export default {
             });
             majorBusiness = majorBusiness.substr(0,majorBusiness.length-1 );
             console.log(majorBusiness);
-    
+            if(_This.isDis){
+                return false;
+            }
             let parms = {
                 "parentTenantId": store.state.userInfo.parentTenantId,
                 "name": _This.oClinic.name,
@@ -198,6 +200,9 @@ export default {
                             type: 'success'
                         });
                         _This.isDis = true;
+                        setTimeout(function(){
+                            window.location.reload();
+                        },200)
                     } else {
                         _This.$message.error('添加失败');
                     }

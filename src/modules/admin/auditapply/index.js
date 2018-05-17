@@ -45,7 +45,8 @@ export default {
             dateValue: "",
             price: 0,
             reason: "",
-            oitem: {}
+            oitem: {},
+            isdisable:false
 
         };
     },
@@ -54,23 +55,28 @@ export default {
         //     return price.toFixed(2)
         // }
         filterTime(time, item) {
-            return jsutils.date2String(new Date(item.createTime), 'yyyy-MM-dd');
+            console.log("------time item--------",item);
+            item=item&&item.replace(/\-/g,"\/").replace(/T/," ").split(".")[0];
+        console.log("------time item----9999-------",item);
+            return jsutils.date2String(new Date(item), 'yyyy/MM/dd');
         }
     },
     created() {
         this.getApplyList(1);
+        
+        
     },
     mounted() {
 
     },
     methods: {
         getApplyList(num) {
-                    
+           
             let _this = this;
-             _this.applyList=[];
+            _this.applyList = [];
             _this.pageNo = num;
             let postData = {
-                tenantId:store.state.userInfo.tenantId,
+                tenantId: store.state.userInfo.tenantId,
                 //   pageSize:_this.pageSize, 
                 //   pageNo:num,            
                 //tenantId: 10096,
@@ -84,19 +90,19 @@ export default {
                 method: 'POST',
                 data: postData,
                 success: function (result) {
-                    if (result.code == 0) {                       
-                       console.log(result.data)
+                    if (result.code == 0) {
+                        console.log(result.data)
                         _this.applyList = result.data.list;
                         //_this.filterApplyList = _this.applyList
                         _this.count = result.data.count
 
                     } else {
-                       
+
                         console.log(result)
                     }
 
                 }
-            },'',store.state.userInfo.token);
+            }, '', store.state.userInfo.token);
         },
         handleCurrentChange(pnum) {
             //this.pageNo=pnum;
@@ -121,15 +127,16 @@ export default {
             this.datevalue = "";
             this.price = 0;
         },
-        changeStatus(item, parms) {          
+        changeStatus(item, parms) {
             this.clearData();
             item.actionVal = parms;
             this.dialogVisible = true;
+            this.isdisable=false
             this.oitem = item;
         },
         confirm(item) {
             let _this = this;
-            console.log(item+"item") 
+            console.log(item.checkStatus)
             if (item.actionVal == 2) {
                 if (_.strLength(_this.reason) < 10) {
                     _this.$message.error("请输入至少十个字");
@@ -141,33 +148,63 @@ export default {
                 this.$message.error("请输入有效期");
                 return false;
             }
-            let postData = {
+           
+           // console.log(postData)
+            if (item.checkStatus == 1) {
+                _this.isdisable=true;
+                let postData={
+                    clinicId:item.clinicId,
+                    objection:_this.reason
+                }
+                console.log(postData)
+                _.ajax({
+                    url: '/api/clinic/refused',
+                    method: 'POST',
+                    data: postData,
+                    success: function (result) {
+                        if (result.code == 0) {
+                            _this.isdisable=false;
+                            _this.dialogVisible = false;
+                            _this.$message.info("保存成功");
+                            _this.dealvalue = '0'
+                            _this.getApplyList(1)
+
+                        } else {
+                            console.log(result);
+                        }
+
+                    }
+                }, '', store.state.userInfo.token);
+            } else {
+                _this.isdisable=true;
+                 let postData = {
                 status: item.actionVal,
                 clinicId: item.clinicId,
                 objection: _this.reason,
                 deadline: _this.dateValue,
                 rentAmount: _this.price,
-                tenantId:store.state.userInfo.parentTenantId
-               //tenantId: 10096,
+                tenantId: store.state.userInfo.parentTenantId
             }
-            console.log(postData)
-            _.ajax({
-                url: '/api/clinic/check',
-                method: 'POST',
-                data: postData,
-                success: function (result) {
-                    if (result.code == 0) {
-                        _this.dialogVisible=false;                        
-                        _this.$message.info("保存成功");
-                        _this.dealvalue='0'
-                         _this.getApplyList(1)                        
+                _.ajax({
+                    url: '/api/clinic/check',
+                    method: 'POST',
+                    data: postData,
+                    success: function (result) {
+                        if (result.code == 0) {
+                            _this.isdisable=false;
+                            _this.dialogVisible = false;
+                            _this.$message.info("保存成功");
+                            _this.dealvalue = '0'
+                            _this.getApplyList(1)
 
-                    } else {
-                        console.log(result);
+                        } else {
+                            console.log(result);
+                        }
+
                     }
+                }, '', store.state.userInfo.token);
+            }
 
-                }
-            },'',store.state.userInfo.token);
         },
         downLoad(url) {
             window.open(url)

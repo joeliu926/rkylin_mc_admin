@@ -122,18 +122,26 @@
           border: none;
           padding: 20px 0;
         }
+        .names { 
+          width:100px;
+          display: inline-block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+         
+         
+        }
       }
     }
   }
-  .tip-text{
+  .tip-text {
     width: 100%;
     display: block;
-    text-align: center
+    text-align: center;
+  }
+  a {
+    color: #1f2d3d;
+    text-decoration: none;
+  }
 }
-a{
-  color: #1f2d3d;
-  text-decoration: none;
-}
-}
-
 </style>
