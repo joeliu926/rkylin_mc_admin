@@ -8,6 +8,7 @@ module.exports ={
     fileDownload:"",
     fileUpload:"https://nihaomc.com/oms_sit/",
     //fileUpload:"https://nihaomc.com/uploadimg_dev/",
-    //fileUpload:"https://sit-api.nihaomc.com/uploadimg_dev/",
+    //fileUpload:"https://nihaomc.com/uploadimg_dev/",
+    fileUpload:"https://nihaomc.com/oms_sit/",
     wsReqUrl:"wss://nihaomc.com/websocket_dev/"
 };

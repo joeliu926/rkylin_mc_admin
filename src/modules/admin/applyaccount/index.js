@@ -66,7 +66,8 @@ export default {
             mapPoint:{},
             oCreatData:{},
             businessLicense:"",
-            licence:""
+            licence:"",
+            isDis: false
         };
     },
     created() {
@@ -97,45 +98,48 @@ export default {
         fsubmit () {
 
             /*验证判断必填项*/
-            if(!/\S{1,}/.test(this.oClinic.name)){
-                this.$message.error("诊所名称不能为空");
-                return false;
-            }
-            if(!/\S{1,}/.test(this.checkUserhVal)){
-                this.$message.error("诊所管理员用户名不能为空");
-                return false;
-            }
-            if(!/\S{1,}/.test(this.oClinic.linkman)){
-                this.$message.error("联系人姓名不能为空");
-                return false;
-            }
-            let phone= this.oClinic.phone;
-            if((!VAREGEX.isMobile(phone))&&!VAREGEX.isTel(phone)){ //VAREGEX
-                this.$message.error("请输入正确的电话号码");
-                return false;
-            }
-            if((!VAREGEX.isEmail(this.oClinic.email)) && (this.oClinic.email != "") ){ //VAREGEX
-                this.$message.error("请输入正确的邮箱");
-                return false;
-            }
-            if(!/\S{1,}/.test(this.oClinic.qualification)){
-                this.$message.error("请选择诊所等级");
-                return false;
-            }
-            if( this.caseDetail.products.length < 1){
-                this.$message.error("请选择主营项目");
-                return false;
-            }
-            if(!/\S{1,}/.test(this.oClinic.businessTime)){
-                this.$message.error("请输入营业时间");
-                return false;
-            }
-            if(!/\S{1,}/.test(this.address)){
-                this.$message.error("请输入详细地址");
-                return false;
-            }
+            // if(!/\S{1,}/.test(this.oClinic.name)){
+            //     this.$message.error("诊所名称不能为空");
+            //     return false;
+            // }
+            // if(!/\S{1,}/.test(this.checkUserhVal)){
+            //     this.$message.error("诊所管理员用户名不能为空");
+            //     return false;
+            // }
+            // if(!/\S{1,}/.test(this.oClinic.linkman)){
+            //     this.$message.error("联系人姓名不能为空");
+            //     return false;
+            // }
+            // let phone= this.oClinic.phone;
+            // if((!VAREGEX.isMobile(phone))&&!VAREGEX.isTel(phone)){ //VAREGEX
+            //     this.$message.error("请输入正确的电话号码");
+            //     return false;
+            // }
+            // if((!VAREGEX.isEmail(this.oClinic.email)) && (this.oClinic.email != "") ){ //VAREGEX
+            //     this.$message.error("请输入正确的邮箱");
+            //     return false;
+            // }
+            // if(!/\S{1,}/.test(this.oClinic.qualification)){
+            //     this.$message.error("请选择诊所等级");
+            //     return false;
+            // }
+            // if( this.caseDetail.products.length < 1){
+            //     this.$message.error("请选择主营项目");
+            //     return false;
+            // }
+            // if(this.defaultImg.indexOf(":") == -1){
+            //     this.$message.error("请上传LOGO");
+            //     return false;
+            // }
+            // if(!/\S{1,}/.test(this.oClinic.businessTime)){
+            //     this.$message.error("请输入营业时间");
+            //     return false;
+            // }
+            // if(!/\S{1,}/.test(this.address)){
+            //     this.$message.error("请输入详细地址");
+            //     return false;
+            // }
             
-
             let _This = this;
             _This.editShow = false;
             _This.viewShow = true;
@@ -156,7 +160,7 @@ export default {
             let _This = this;
             _This.editShow = true;
             _This.viewShow = false;
-            
+            _This.isDis = false;
         },
         fconfirm () {   
             let _This = this;
@@ -165,9 +169,12 @@ export default {
                 majorBusiness += pro.productName + "/" 
             });
             majorBusiness = majorBusiness.substr(0,majorBusiness.length-1 );
-            console.log(majorBusiness)
+            console.log(majorBusiness);
+            if(_This.isDis){
+                return false;
+            }
             let parms = {
-                "parentTenantId": store.state.userInfo.clinic[0].clinicId,
+                "parentTenantId": store.state.userInfo.parentTenantId,
                 "name": _This.oClinic.name,
                 "phone": _This.oClinic.phone,
                 "adminLoginName": _This.checkUserhVal,
@@ -177,11 +184,11 @@ export default {
                 "majorBusiness": majorBusiness,
                 "businessTime": _This.oClinic.businessTime,
                 "address": _This.address,
+                "email": _This.oClinic.email,
                 "businessLicense": _This.businessLicense, // 营业执照
                 "licence": _This.licence, // 许可证
                 "logo": _This.defaultImg,
             }
-            //console.log(parms);
             _.ajax({
                 url: '/api/clinic/create',
                 type: 'POST',
@@ -192,7 +199,14 @@ export default {
                         _This.$message({message: '添加成功',
                             type: 'success'
                         });
-                    } 
+                        _This.isDis = true;
+                        setTimeout(function(){
+                            _This.$router.push('admin/applyaccount');
+                            window.location.reload();
+                        },200)
+                    } else {
+                        _This.$message.error('添加失败');
+                    }
                 },
                 error: function(result) {
                     _This.$message.error('添加失败');
@@ -237,7 +251,7 @@ export default {
                 this.loading = false;
                 var _This = this;
                 _.ajax({
-                    url: CONSTANT.host_one+'/api/product/searchList?loginName='+ store.state.userInfo.loginName +'&productName=' + query,
+                    url: CONSTANT.host_one+'api/product/searchproductname?userId='+ parseInt(store.state.userInfo.id) +'&productName=' + query,
                     urlType:'full',
                     method: 'GET',
                     success: function (result) {
@@ -286,9 +300,8 @@ export default {
         fAjaxFileUpload(e, filenum){
             let _This = this;
             var imgFile = e.target.files[0];
-            
-            if(imgFile.size>5*1024*1024){
-                this.$message.error('图片大小不能超过5M！');
+            if(imgFile.size > 2*1024*1024){
+                this.$message.error('图片大小不能超过2M！');
                 return false;
             }
             let aLogoType=[".jpg",".jpeg",".png",".bmp"];
@@ -326,9 +339,12 @@ export default {
                             _This.defaultImg = result.data[0];
                         }
                        
+                    } else {
+                        _This.$message.error("上传失败");
                     }
                 },
                 error: function(result) {
+                    _This.$message.error("上传失败");
                     //console.log("error-- result------>", result)
                 }
             },'',store.state.userInfo.token);

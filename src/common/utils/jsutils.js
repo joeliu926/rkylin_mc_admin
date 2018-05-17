@@ -41,7 +41,7 @@ module.exports = {
         
         if(opts.urlType=='full')
         {
-            opts.url=opts.url;
+            opts.url=encodeURI(opts.url);
         }
         else {
             opts.url=CONSTANT.host+opts.url;
