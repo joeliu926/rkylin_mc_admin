@@ -55,6 +55,9 @@ export default {
         //     return price.toFixed(2)
         // }
         filterTime(time, item) {
+            console.log("------time item--------",item);
+            item=item&&item.replace(/\-/g,"\/").replace(/T/," ").split(".")[0];
+        console.log("------time item----9999-------",item);
             return jsutils.date2String(new Date(item), 'yyyy/MM/dd');
         }
     },
