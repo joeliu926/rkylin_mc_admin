@@ -4,8 +4,8 @@
 module.exports ={
     pageSize: 15,
     host:"https://api-uat.nihaomc.com/oms",
-    host_one:"https://uat-api.nihaomc.com/",
+    host_one:"https://api-uat.nihaomc.com/bms/",
     fileDownload:"",
-    fileUpload:"https://nihaomc.com/oms_uat/",
+    fileUpload:"https://api-uat.nihaomc.com/oms/",
     wsReqUrl:"wss://nihaomc.com/websocket_dev/"
 };
