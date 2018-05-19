@@ -98,47 +98,47 @@ export default {
         fsubmit () {
 
             /*验证判断必填项*/
-            // if(!/\S{1,}/.test(this.oClinic.name)){
-            //     this.$message.error("诊所名称不能为空");
-            //     return false;
-            // }
-            // if(!/\S{1,}/.test(this.checkUserhVal)){
-            //     this.$message.error("诊所管理员用户名不能为空");
-            //     return false;
-            // }
-            // if(!/\S{1,}/.test(this.oClinic.linkman)){
-            //     this.$message.error("联系人姓名不能为空");
-            //     return false;
-            // }
-            // let phone= this.oClinic.phone;
-            // if((!VAREGEX.isMobile(phone))&&!VAREGEX.isTel(phone)){ //VAREGEX
-            //     this.$message.error("请输入正确的电话号码");
-            //     return false;
-            // }
-            // if((!VAREGEX.isEmail(this.oClinic.email)) && (this.oClinic.email != "") ){ //VAREGEX
-            //     this.$message.error("请输入正确的邮箱");
-            //     return false;
-            // }
-            // if(!/\S{1,}/.test(this.oClinic.qualification)){
-            //     this.$message.error("请选择诊所等级");
-            //     return false;
-            // }
-            // if( this.caseDetail.products.length < 1){
-            //     this.$message.error("请选择主营项目");
-            //     return false;
-            // }
-            // if(this.defaultImg.indexOf(":") == -1){
-            //     this.$message.error("请上传LOGO");
-            //     return false;
-            // }
-            // if(!/\S{1,}/.test(this.oClinic.businessTime)){
-            //     this.$message.error("请输入营业时间");
-            //     return false;
-            // }
-            // if(!/\S{1,}/.test(this.address)){
-            //     this.$message.error("请输入详细地址");
-            //     return false;
-            // }
+            if(!/\S{1,}/.test(this.oClinic.name)){
+                this.$message.error("诊所名称不能为空");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.checkUserhVal)){
+                this.$message.error("诊所管理员用户名不能为空");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.oClinic.linkman)){
+                this.$message.error("联系人姓名不能为空");
+                return false;
+            }
+            let phone= this.oClinic.phone;
+            if((!VAREGEX.isMobile(phone))&&!VAREGEX.isTel(phone)){ //VAREGEX
+                this.$message.error("请输入正确的电话号码");
+                return false;
+            }
+            if((!VAREGEX.isEmail(this.oClinic.email)) && (this.oClinic.email != "") ){ //VAREGEX
+                this.$message.error("请输入正确的邮箱");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.oClinic.qualification)){
+                this.$message.error("请选择诊所等级");
+                return false;
+            }
+            if( this.caseDetail.products.length < 1){
+                this.$message.error("请选择主营项目");
+                return false;
+            }
+            if(this.defaultImg.indexOf(":") == -1){
+                this.$message.error("请上传LOGO");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.oClinic.businessTime)){
+                this.$message.error("请输入营业时间");
+                return false;
+            }
+            if(!/\S{1,}/.test(this.address)){
+                this.$message.error("请输入详细地址");
+                return false;
+            }
             
             let _This = this;
             _This.editShow = false;
@@ -201,7 +201,6 @@ export default {
                         });
                         _This.isDis = true;
                         setTimeout(function(){
-                            _This.$router.push('admin/applyaccount');
                             window.location.reload();
                         },200)
                     } else {
