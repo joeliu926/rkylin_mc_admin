@@ -299,11 +299,19 @@ export default {
         fAjaxFileUpload(e, filenum){
             let _This = this;
             var imgFile = e.target.files[0];
-            if(imgFile.size > 2*1024*1024){
-                this.$message.error('图片大小不能超过2M！');
-                return false;
+
+            var aLogoType = [];
+            if( filenum == 3 ){
+                if(imgFile.size > 2*1024*1024){
+                    this.$message.error('图片大小不能超过2M！');
+                    return false;
+                }
+                aLogoType=[".jpg",".jpeg",".png",".bmp"];
+            } else {
+                aLogoType=[".jpg",".jpeg",".png",".bmp",".pdf"];
             }
-            let aLogoType=[".jpg",".jpeg",".png",".bmp"];
+           
+           
             let imgName = imgFile.name.substr(imgFile.name.lastIndexOf(".")).toLocaleLowerCase();
             
             if(aLogoType.indexOf(imgName)<0){

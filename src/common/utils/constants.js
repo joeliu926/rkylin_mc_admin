@@ -3,9 +3,9 @@
  */
 module.exports ={
     pageSize: 15,
-    host:"https://nihaomc.com/oms",
-    host_one:"https://api.nihaomc.com/",
+    host:"https://nihaomc.com/oms_uat",
+    host_one:"https://sit-api.nihaomc.com/",
     fileDownload:"",
-    fileUpload:"https://nihaomc.com/oms/",
+    fileUpload:"https://nihaomc.com/oms_sit/",
     wsReqUrl:"wss://nihaomc.com/websocket_dev/"
 };
