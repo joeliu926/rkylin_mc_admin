@@ -308,6 +308,10 @@ export default {
                 }
                 aLogoType=[".jpg",".jpeg",".png",".bmp"];
             } else {
+                if(imgFile.size > 5*1024*1024){
+                    this.$message.error('图片大小不能超过5M！');
+                    return false;
+                }
                 aLogoType=[".jpg",".jpeg",".png",".bmp",".pdf"];
             }
            
@@ -324,7 +328,11 @@ export default {
             fdata.append('user',"test");
             console.log(fdata);
             console.log(_This.imgUploadUrl);
-
+            const loading = _This.$loading({
+                lock: true,
+                text: '上传中，请耐心等待...',
+            });
+             
             _.ajax({
                 url: _This.imgUploadUrl,
                 type: 'POST',
@@ -335,7 +343,7 @@ export default {
                 success: function(result) {
                     console.log(result)
                     if(result.code==0&&result.data.length>0){
-
+                        loading.close();
                         if (filenum == 1){
                             _This.file1 = imgFile.name;
                             _This.businessLicense = result.data[0]
@@ -351,6 +359,7 @@ export default {
                     }
                 },
                 error: function(result) {
+                    loading.close();
                     _This.$message.error("上传失败");
                     //console.log("error-- result------>", result)
                 }

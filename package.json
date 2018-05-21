@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node build/dev.js https://nihaomc.com/oms_sit ws://localhost:8055/ https://nihaomc.com/oms_sit/ https://sit-api.nihaomc.com/",
-    "sdev": "node build/dist.js https://nihaomc.com/oms_sit wss://nihaomc.com/websocket_dev/ https://nihaomc.com/oms_sit/ https://sit-api.nihaomc.com/",
-    "test": "node build/dist.js  https://nihaomc.com/oms_uat wss://nihaomc.com/websocket_test/ https://nihaomc.com/oms_uat/ https://uat-api.nihaomc.com/",
-    "dist": "node build/dist.js https://nihaomc.com/oms wss://nihaomc.com/websocket/ https://nihaomc.com/oms/ https://api.nihaomc.com/",
+    "dev": "node build/dev.js https://api-dev.nihaomc.com/oms ws://localhost:8055/ https://api-dev.nihaomc.com/oms/ https://api-dev.nihaomc.com/bms/",
+    "sdev": "node build/dist.js https://api-dev.nihaomc.com/oms wss://nihaomc.com/websocket_dev/ https://api-dev.nihaomc.com/oms/ https://api-dev.nihaomc.com/bms/",
+    "test": "node build/dist.js  https://api-uat.nihaomc.com/oms wss://nihaomc.com/websocket_test/ https://api-uat.nihaomc.com/oms/ https://api-uat.nihaomc.com/bms/",
+    "dist": "node build/dist.js https://api-prd.nihaomc.com/oms wss://nihaomc.com/websocket/ https://api-prd.nihaomc.com/oms/ https://api-prd.nihaomc.com/bms/",
     "_test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

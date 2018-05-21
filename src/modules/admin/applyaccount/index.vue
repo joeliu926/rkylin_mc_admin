@@ -130,4 +130,11 @@
         height: 400px;
         margin: auto
     }
+    // 遮罩层
+    .el-loading-mask{
+        background: rgba(0, 0, 0, 0.7);
+        .el-loading-text{
+            color: #fff;
+        }
+    }
 </style>

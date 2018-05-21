@@ -83,7 +83,7 @@
                                     </el-date-picker>
                                   </div>
                                   <div class="money" style="text-align: center;padding-top: 20px">
-                                      <span>付款金额： <el-input placeholder=0 style="width:100px" :value='price' type="number" min=0></el-input>   元</span>
+                                      <span>付款金额： <el-input placeholder=0 style="width:100px" v-model="price" type="number" min=0></el-input>   元</span>
                                   </div>
                             </div>
                             <div class="refused" v-if="oitem.actionVal=='2'" style="text-align: center">

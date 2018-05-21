@@ -55,9 +55,9 @@ export default {
         //     return price.toFixed(2)
         // }
         filterTime(time, item) {
-            console.log("------time item--------",item);
+           // console.log("------time item--------",item);
             item=item&&item.replace(/\-/g,"\/").replace(/T/," ").split(".")[0];
-        console.log("------time item----9999-------",item);
+        //console.log("------time item----9999-------",item);
             return jsutils.date2String(new Date(item), 'yyyy/MM/dd');
         }
     },
@@ -150,7 +150,7 @@ export default {
             }
            
            // console.log(postData)
-            if (item.checkStatus == 1) {
+            if (item.actionVal == 2) {
                 _this.isdisable=true;
                 let postData={
                     clinicId:item.clinicId,
@@ -175,7 +175,8 @@ export default {
 
                     }
                 }, '', store.state.userInfo.token);
-            } else {
+            } else if(item.actionVal == 1){
+                
                 _this.isdisable=true;
                  let postData = {
                 status: item.actionVal,
@@ -185,6 +186,7 @@ export default {
                 rentAmount: _this.price,
                 tenantId: store.state.userInfo.parentTenantId
             }
+              console.log(postData)
                 _.ajax({
                     url: '/api/clinic/check',
                     method: 'POST',
