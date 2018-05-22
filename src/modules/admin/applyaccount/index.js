@@ -119,6 +119,14 @@ export default {
                 this.$message.error("请输入正确的邮箱");
                 return false;
             }
+            if(this.$refs.fileBusi.value == ""){
+                this.$message.error("请上传营业执照复印件");
+                return false;
+            }
+            if(this.$refs.fileLice.value == ""){
+                this.$message.error("请上传医疗机构许可证");
+                return false;
+            }
             if(!/\S{1,}/.test(this.oClinic.qualification)){
                 this.$message.error("请选择诊所等级");
                 return false;
@@ -322,7 +330,7 @@ export default {
                 _This.$message.error("上传图片格式错误");
                 return false;
             }
-
+           
             var fdata = new FormData();
             fdata.append('imgFile', imgFile);
             fdata.append('user',"test");

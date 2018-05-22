@@ -55,7 +55,7 @@
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
-                        <span class="row-item-title f-14" >营业执照复印件</span><b class="line-row-tra"></b>
+                        <span class="row-item-title f-14" >营业执照复印件</span><b class="line-row-red"></b>
                         <!-- <el-upload
                             style="margin-left: 180px;margin-top: -20px;"
                             class="upload-demo"
@@ -69,12 +69,12 @@
                             :file-list="fileList">
                             <el-button size="small" type="primary">点击上传</el-button> 
                         </el-upload> -->
-                        <input type="file" @change="fAjaxFileUpload($event,1)">
+                        <input type="file" @change="fAjaxFileUpload($event,1)" ref="fileBusi">
                     </div>
                 </div>
                 <div class="row-ct">
                     <div class="row-item" >
-                        <span class="row-item-title f-14" >医疗机构许可证</span><b class="line-row-tra"></b>
+                        <span class="row-item-title f-14" >医疗机构许可证</span><b class="line-row-red"></b>
                         <!-- <el-upload
                             style="margin-left: 180px;margin-top: -20px;"
                             class="upload-demo"
@@ -88,7 +88,7 @@
                             :file-list="fileList">
                             <el-button size="small" type="primary">点击上传</el-button>
                         </el-upload> -->
-                        <input type="file" @change="fAjaxFileUpload($event,2)"   element-loading-background="rgba(0, 0, 0, 0.8)">
+                        <input type="file" @change="fAjaxFileUpload($event,2)" ref="fileLice">
                     </div>
                 </div>
                 <div class="row-ct">
