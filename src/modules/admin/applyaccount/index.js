@@ -170,7 +170,9 @@ export default {
             });
             majorBusiness = majorBusiness.substr(0,majorBusiness.length-1 );
             console.log(majorBusiness);
-    
+            if(_This.isDis){
+                return false;
+            }
             let parms = {
                 "parentTenantId": store.state.userInfo.parentTenantId,
                 "name": _This.oClinic.name,
@@ -182,15 +184,11 @@ export default {
                 "majorBusiness": majorBusiness,
                 "businessTime": _This.oClinic.businessTime,
                 "address": _This.address,
+                "email": _This.oClinic.email,
                 "businessLicense": _This.businessLicense, // 营业执照
                 "licence": _This.licence, // 许可证
                 "logo": _This.defaultImg,
             }
-            _This.oClinic = {};
-            console.log(parms);
-            _This.$message({message: '添加成功',
-                            type: 'success'
-                        });
             _.ajax({
                 url: '/api/clinic/create',
                 type: 'POST',
@@ -202,6 +200,9 @@ export default {
                             type: 'success'
                         });
                         _This.isDis = true;
+                        setTimeout(function(){
+                            window.location.reload();
+                        },200)
                     } else {
                         _This.$message.error('添加失败');
                     }
@@ -298,12 +299,23 @@ export default {
         fAjaxFileUpload(e, filenum){
             let _This = this;
             var imgFile = e.target.files[0];
-            
-            if(imgFile.size > 2*1024*1024){
-                this.$message.error('图片大小不能超过2M！');
-                return false;
+
+            var aLogoType = [];
+            if( filenum == 3 ){
+                if(imgFile.size > 2*1024*1024){
+                    this.$message.error('图片大小不能超过2M！');
+                    return false;
+                }
+                aLogoType=[".jpg",".jpeg",".png",".bmp"];
+            } else {
+                if(imgFile.size > 5*1024*1024){
+                    this.$message.error('图片大小不能超过5M！');
+                    return false;
+                }
+                aLogoType=[".jpg",".jpeg",".png",".bmp",".pdf"];
             }
-            let aLogoType=[".jpg",".jpeg",".png",".bmp"];
+           
+           
             let imgName = imgFile.name.substr(imgFile.name.lastIndexOf(".")).toLocaleLowerCase();
             
             if(aLogoType.indexOf(imgName)<0){
@@ -316,7 +328,11 @@ export default {
             fdata.append('user',"test");
             console.log(fdata);
             console.log(_This.imgUploadUrl);
-
+            const loading = _This.$loading({
+                lock: true,
+                text: '上传中，请耐心等待...',
+            });
+             
             _.ajax({
                 url: _This.imgUploadUrl,
                 type: 'POST',
@@ -327,7 +343,7 @@ export default {
                 success: function(result) {
                     console.log(result)
                     if(result.code==0&&result.data.length>0){
-
+                        loading.close();
                         if (filenum == 1){
                             _This.file1 = imgFile.name;
                             _This.businessLicense = result.data[0]
@@ -338,9 +354,13 @@ export default {
                             _This.defaultImg = result.data[0];
                         }
                        
+                    } else {
+                        _This.$message.error("上传失败");
                     }
                 },
                 error: function(result) {
+                    loading.close();
+                    _This.$message.error("上传失败");
                     //console.log("error-- result------>", result)
                 }
             },'',store.state.userInfo.token);
