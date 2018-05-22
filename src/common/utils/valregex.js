@@ -20,7 +20,7 @@ module.exports={
        return false;
     },
     isMobile:function (text) {//手机号码验证
-        let regex=/^1(3|4|5|7|8|9)\d{9}$/;
+        let regex=/^1(3|4|5|6|7|8|9)\d{9}$/;
         if(regex.test(text)){
             return true;
         }
